@@ -1,0 +1,23 @@
+{
+  "name": "js-summer-camp-vanila",
+  "version": "1.0.0",
+  "description": "simple project for grown up js skills",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Starting of test script...\" && exit 1",
+    "lint": "eslint -c .eslintrc.js src"
+  },
+  "author": "Denis Wonder",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^7.29.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsdoc": "^35.4.1",
+    "eslint-plugin-prefer-arrow": "^1.2.3"
+  },
+  "dependencies": {
+    "firebase": "^8.6.8",
+    "firebase-tools": "^9.14.0",
+    "firestore-export-import": "^0.15.0"
+  }
+}
