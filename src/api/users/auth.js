@@ -1,10 +1,13 @@
-import {firestore, auth} from '../firebase-setting.js';
+import {auth} from '../firebase-setting.js';
 
 /**
  *
+ * @param email
+ * @param password
  */
-export function createNewUser() {
-  auth.createUserWithEmailAndPassword('qwerty@qa.aq', 'qwerty')
+export function createNewUser(email, password) {
+    console.log('creating of new user with creds... '+email+', '+password);
+  auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       console.log('successfully create of user! ' + userCredential);
     })
@@ -15,8 +18,11 @@ export function createNewUser() {
 
 /**
  *
+ * @param email
+ * @param password
  */
-export function signIn(email, password) {
+export function loginAsExistingUser(email, password) {
+    console.log('LOGIN with creds... '+email+', '+password);
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredenial) => {
       alert('OK');
