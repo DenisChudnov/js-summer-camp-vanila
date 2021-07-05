@@ -1,7 +1,7 @@
 import './main.css';
 import '../../components/header/header.js';
-import {checkFBConnect} from "../../api/films/interactionDB";
+import {checkFBConnect, getFilms} from "../../api/films/interactionDB";
 
 document.getElementById('checkItOut').addEventListener('click',()=>{
-    checkFBConnect();
+  getFilms('pk', 'asc', 3,2);
 })
