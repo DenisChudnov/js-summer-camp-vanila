@@ -1,11 +1,8 @@
-import firebase from "firebase/app";
-
-console.log('welcome to auth page');
 import './auth.css';
 import '../../styles/style.css';
-import {checkWork, createNewUser, loginAsExistingUser} from '../../api/users/auth.js';
-import {isEmailValid} from "../../utils/auth-validator";
-
+import {createNewUser, login, loginAsExistingUser} from '../../api/users/auth.js';
+import {isEmailValid} from '../../utils/authValidator';
+import {checkUserInLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
 
 
 document
@@ -21,7 +18,7 @@ document
     document.getElementById('sign-in-container').classList.add('hidden');
     document.getElementById('sign-up-container').classList.remove('hidden');
   });
-//
+
 document
   .getElementById('sign-up-button')
   .addEventListener('click', () => {
@@ -36,26 +33,25 @@ document
   });
 
 document
-    .getElementById('sign-in-button')
-    .addEventListener('click', () => {
-        const signInForm = document.getElementById('sign-in-form');
-        const email = signInForm['inputEmail2'].value;
-        const password = signInForm['inputPassword2'].value;
-        loginAsExistingUser(email, password);
+  .getElementById('sign-in-button')
+  .addEventListener('click', () => {
+    const signInForm = document.getElementById('sign-in-form');
+    const email = signInForm.inputEmail2.value;
+    const password = signInForm.inputPassword2.value;
+    login(email, password);
+  });
 
+document
+  .getElementById('check')
+  .addEventListener('click', ()=>{
+    if (checkUserInLocalStorage()) alert('there are exist active user'); else {
+      alert('no users authenticated');
+    }
+  });
+
+
+document
+    .getElementById('logout')
+    .addEventListener('click',()=>{
+        removeUserFromLocalStorage();
     })
-
-
-
-// /**
-//  * In this func we check, that
-//  * Entered email is not
-//  * Registered yet.
-//  * If user with entered email is already exist in
-//  * Database - func will return false.
-//  * @param email - valid email string
-//  */
-// Function isNewUser(email){
-//
-// }
-

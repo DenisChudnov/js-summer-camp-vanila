@@ -1,4 +1,6 @@
-import {auth} from '../firebase-setting.js';
+import {auth} from '../firebaseSettings.js';
+import firebase from "firebase/app";
+import {addUserToLocalStorage, removeUserFromLocalStorage} from "../../utils/authLocalStorage";
 
 /**
  *
@@ -10,9 +12,11 @@ export function createNewUser(email, password) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       console.log('successfully create of user! ' + userCredential);
+        return userCredential;
     })
     .catch((error) => {
       console.log('something went wrong... ' + error);
+      return error;
     });
 }
 
@@ -21,22 +25,19 @@ export function createNewUser(email, password) {
  * @param email
  * @param password
  */
-export function loginAsExistingUser(email, password) {
+export function login(email, password) {
     console.log('LOGIN with creds... '+email+', '+password);
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredenial) => {
-      alert('OK');
-      console.log('success ' + userCredenial);
+      console.log('success')
+      addUserToLocalStorage(auth.currentUser);
     })
     .catch((error) => {
-      alert('NO');
+      alert('Ooops, looks like something went wrong' + error);
       console.log('something went wrong ' + error);
     });
 }
 
-/**
- *
- */
-export function checkWork(smthng) {
-  alert('it is ' + smthng);
+export function logout(){
+    removeUserFromLocalStorage();
 }
