@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     main: './src/pages/main/main.js',
     auth: './src/pages/auth/auth.js',
+    details:'./src/pages/filmDetails/details.js',
   },
   output: {
     filename: '[name].bundle.[chunkhash].js',
@@ -22,6 +23,10 @@ module.exports = {
     new HTMLPlugin({
       filename: 'auth.html',
       template: './src/pages/auth/auth.html',
+    }),
+    new HTMLPlugin({
+      filename: 'details.html',
+      template: './src/pages/filmDetails/details.html',
     }),
     new CleanWebpackPlugin(),
   ],

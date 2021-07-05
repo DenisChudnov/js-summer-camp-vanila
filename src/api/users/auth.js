@@ -1,6 +1,7 @@
 import {auth} from '../firebaseSettings.js';
 import firebase from "firebase/app";
 import {addUserToLocalStorage, removeUserFromLocalStorage} from "../../utils/authLocalStorage";
+import {setAuthButtonText} from "../../components/header/header";
 
 /**
  *
@@ -26,11 +27,11 @@ export function createNewUser(email, password) {
  * @param password
  */
 export function login(email, password) {
-    console.log('LOGIN with creds... '+email+', '+password);
   auth.signInWithEmailAndPassword(email, password)
     .then((userCredenial) => {
       console.log('success')
       addUserToLocalStorage(auth.currentUser);
+      setAuthButtonText();
     })
     .catch((error) => {
       alert('Ooops, looks like something went wrong' + error);

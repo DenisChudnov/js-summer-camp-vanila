@@ -1,26 +1,7 @@
-import './main.css'
-console.log('hello, world')
-const authButton = document.getElementById('auth-call-btn');
+import './main.css';
+import '../../components/header/header.js';
+import {checkFBConnect} from "../../api/films/interactionDB";
 
-
-document
-    .getElementById('auth-call-btn')
-    .addEventListener("click",()=>{
-        // console.log('click', authButton.innerHTML)
-        // if(authButton.innerHTML == "Login"){
-        //     changeAuthButtonLabel(false)
-        // } else {
-        //     changeAuthButtonLabel(true)
-        // }
-       window.location.href = "/auth.html"
-    })
-
-function changeAuthButtonLabel(isLoginned){
-    if(isLoginned){
-        console.log('true')
-        authButton.innerHTML = "Logout";
-    } else {
-        console.log('false')
-        authButton.innerHTML = "Login";
-    }
-}
+document.getElementById('checkItOut').addEventListener('click',()=>{
+    checkFBConnect();
+})

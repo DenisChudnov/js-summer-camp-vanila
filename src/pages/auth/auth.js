@@ -1,9 +1,10 @@
 import './auth.css';
 import '../../styles/style.css';
-import {createNewUser, login, loginAsExistingUser} from '../../api/users/auth.js';
-import {isEmailValid} from '../../utils/authValidator';
+import {createNewUser, login} from '../../api/users/auth.js';
+import {isEmailValid, isFieldValueLengthValid} from '../../utils/authValidator';
 import {checkUserInLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
-
+import '../../components/header/header.js';
+import {setAuthButtonText} from '../../components/header/header';
 
 document
   .getElementById('show-signin-form')
@@ -25,10 +26,14 @@ document
     const signUpForm = document.getElementById('sign-up-form');
     const email = signUpForm.inputEmail1.value;
     const password = signUpForm.inputPassword1.value;
-    if (isEmailValid(email)) {
-      createNewUser(email, password);
+    if (isFieldValueLengthValid(email) && isFieldValueLengthValid(password)){
+      if (isEmailValid(email)) {
+        createNewUser(email, password);
+      } else {
+        alert('Invalid email');
+      }
     } else {
-      alert('bad');
+      alert('email and password length should be more, than 5 symbols and less, than 80 symbols');
     }
   });
 
@@ -39,11 +44,13 @@ document
     const email = signInForm.inputEmail2.value;
     const password = signInForm.inputPassword2.value;
     login(email, password);
+
   });
 
 document
   .getElementById('check')
   .addEventListener('click', ()=>{
+    console.log('check');
     if (checkUserInLocalStorage()) alert('there are exist active user'); else {
       alert('no users authenticated');
     }
@@ -51,7 +58,10 @@ document
 
 
 document
-    .getElementById('logout')
-    .addEventListener('click',()=>{
-        removeUserFromLocalStorage();
-    })
+  .getElementById('logout')
+  .addEventListener('click', ()=>{
+    console.log('logout');
+    removeUserFromLocalStorage();
+    setAuthButtonText();
+    console.log('User was logged out');
+  });

@@ -27,5 +27,4 @@ export function removeUserFromLocalStorage(){
  */
 export function checkUserInLocalStorage(){
   return !!localStorage.getItem('activeUser');
-
 }
