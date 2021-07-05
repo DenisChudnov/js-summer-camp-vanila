@@ -1,4 +1,4 @@
-class Film {
+export class Film {
   constructor(data) {
     this.pk = data.pk;
     this.title = data.title;
