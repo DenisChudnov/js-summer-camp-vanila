@@ -8,6 +8,9 @@ module.exports = {
     auth: './src/pages/auth/auth.js',
     details:'./src/pages/filmDetails/details.js',
   },
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
   output: {
     filename: '[name].bundle.[chunkhash].js',
     path: path.resolve(__dirname, 'public'),
@@ -19,19 +22,27 @@ module.exports = {
     new HTMLPlugin({
       filename: 'index.html',
       template: './src/pages/main/main.html',
+      chunks: ['main']
     }),
     new HTMLPlugin({
       filename: 'auth.html',
       template: './src/pages/auth/auth.html',
+      chunks: ['auth']
     }),
     new HTMLPlugin({
       filename: 'details.html',
       template: './src/pages/filmDetails/details.html',
+      chunks: ['details']
     }),
     new CleanWebpackPlugin(),
   ],
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],

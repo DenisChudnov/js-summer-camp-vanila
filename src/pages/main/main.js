@@ -31,6 +31,9 @@ searchInput.addEventListener('keyup',()=>{
 })
 
 
+document.getElementById('checkIt').addEventListener('click',()=>{
+  alert('aga')
+})
 
 function renderFilmTable(film) {
   const row = filmTable.insertRow(filmTable.rows.length);
