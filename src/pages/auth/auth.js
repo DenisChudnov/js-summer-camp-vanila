@@ -1,6 +1,6 @@
 import './auth.css';
 import '../../styles/style.css';
-import {createNewUser, login} from '../../api/users/auth.js';
+import {createNewUser, login, logout} from '../../api/users/auth.js';
 import {isEmailValid, isFieldValueLengthValid} from '../../utils/authValidator';
 import {checkUserInLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
 import '../../components/header/header.js';
@@ -43,8 +43,9 @@ document
     const signInForm = document.getElementById('sign-in-form');
     const email = signInForm.inputEmail2.value;
     const password = signInForm.inputPassword2.value;
-    login(email, password);
-
+    login(email, password, function (){
+        window.open('./','_self');
+    });
   });
 
 document
@@ -61,7 +62,7 @@ document
   .getElementById('logout')
   .addEventListener('click', ()=>{
     console.log('logout');
-    removeUserFromLocalStorage();
+    logout();
     setAuthButtonText();
     console.log('User was logged out');
   });
