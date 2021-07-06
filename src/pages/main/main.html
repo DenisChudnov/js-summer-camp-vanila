@@ -13,22 +13,33 @@
 </header>
 
 <main>
-    <button class="btn btn-danger" id="checkIt">check</button>
     <div class="container">
         <input id="table-search-word" placeholder="Search for films.." type="text">
         <table class="table table-bordered table-films-list" id="table-films">
             <thead>
             <tr>
-                <th class="films-table-header">Title</th>
-                <th class="films-table-header">Episode</th>
-                <th class="films-table-header">Release</th>
-                <th class="films-table-header">Director</th>
-                <th class="films-table-header">Producer</th>
+                <th class="films-table-header" id="title-column">Title</th>
+                <th class="films-table-header" id="episode-column">Episode #</th>
+                <th class="films-table-header" id="release-column">Release</th>
+                <th class="films-table-header" id="director-column">Director</th>
+                <th class="films-table-header" id="producer-column">Producer</th>
             </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
+        <label for="select-count">select count per page:</label>
+        <select id="select-count">
+            <option class="select-count-option" id="SC-1">1</option>
+            <option class="select-count-option" id="SC-2">2</option>
+            <option class="select-count-option" id="SC-3" selected="selected">3</option>
+            <option class="select-count-option" id="SC-6">6</option>
+        </select>
+
+        <div>
+            <button class="btn btn-light hidden" id="previous-page-button">previous</button>
+            <button class="btn btn-light" id="next-page-button">next</button>
+        </div>
 
     </div>
 </main>
