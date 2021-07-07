@@ -22,17 +22,17 @@ module.exports = {
     new HTMLPlugin({
       filename: 'index.html',
       template: './src/pages/main/main.html',
-      chunks: ['main']
+      chunks: ['main'],
     }),
     new HTMLPlugin({
       filename: 'auth.html',
       template: './src/pages/auth/auth.html',
-      chunks: ['auth']
+      chunks: ['auth'],
     }),
     new HTMLPlugin({
       filename: 'details.html',
       template: './src/pages/filmDetails/details.html',
-      chunks: ['details']
+      chunks: ['details'],
     }),
     new CleanWebpackPlugin(),
   ],

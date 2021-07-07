@@ -47,18 +47,19 @@ function sortingHandler(index){
     if (sortingOrder == 'desc'){
       sortingOrder = defaultSortingOrder;
       sortingField = defaultSortingField;
-    } else if (sortingOrder == 'asc'){
+    } else if (sortingOrder == defaultSortingOrder){
       sortingOrder = 'desc'
     }
   } else if (index != sortingField){
     sortingField = index;
     sortingOrder = defaultSortingOrder;
   }
-
   sortingTable(sortingField, sortingOrder);
 }
 
 function sortingTable(fieldName, direction){
+  filmList = [];
+  actualPageNumber = defaultActualPageNumber;
   renderUI();
 }
 
@@ -74,13 +75,34 @@ function changeFilmsCountOnPage(e){
   e.preventDefault();
   filmsCountOnPage = 1*(e.target.value);
   actualPageNumber = defaultActualPageNumber;
+  filmList = [];
   renderUI();
 }
 
-async function renderUI(source = ''){
+async function renderUI(source = 'current'){
   cleanUpTable();
-  let nextPageFilms = await isNextPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber);
-  let prevPageFilms = await isPreviousPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber);
+  let lastValueOnPage = '';
+  let firstValueOnPage = '';
+
+    if(filmList[0]){
+      firstValueOnPage = filmList[0][sortingField]
+    }
+    if(filmList[filmList.length-1]){
+      lastValueOnPage = filmList[filmList.length-1][sortingField];
+    }
+
+  filmList = await getFilmListFromAPI(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber,source,firstValueOnPage,lastValueOnPage);
+  filmList.forEach(film => {
+    renderFilmTable(film);
+  })
+  if(filmList[0]){
+    firstValueOnPage = filmList[0][sortingField]
+  }
+  if(filmList[filmList.length-1]){
+    lastValueOnPage = filmList[filmList.length-1][sortingField];
+  }
+  let nextPageFilms = await isNextPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber, firstValueOnPage, lastValueOnPage);
+  let prevPageFilms = await isPreviousPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber, firstValueOnPage, lastValueOnPage);
   if(!nextPageFilms){
     nextPageButton.classList.add('hidden');
   } else if (nextPageFilms){
@@ -91,30 +113,13 @@ async function renderUI(source = ''){
   } else if (prevPageFilms){
     previousPageButton.classList.remove('hidden');
   }
-  console.log('from render: '+sortingField+", "+sortingOrder+", "+filmsCountOnPage+", "+actualPageNumber);
-    let lastValueOnPage = '';
-    let firstValueOnPage = '';
-    if(source == 'next' || source == 'prev'){
-      if(filmList[0]){
-        firstValueOnPage = filmList[0][sortingField]
-        console.log('FVP: '+firstValueOnPage);
-      }
-      if(filmList[filmList.length-1]){
-        lastValueOnPage = filmList[filmList.length-1][sortingField];
-        console.log('FVP: '+lastValueOnPage);
-      }
-
-    }
-
-  filmList = await getFilmListFromAPI(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber,'',firstValueOnPage,lastValueOnPage);
-
-  filmList.forEach(film => {
-    renderFilmTable(film);
-  })
 }
 
-async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage, page = defaultActualPageNumber, direction = '',firstValueOnPage = '', lastValueOnPage = ''){
-  let films =  getFilms(sortingField, sortingOrder, limit, page, 'next', firstValueOnPage, lastValueOnPage);
+async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage, page = defaultActualPageNumber, direction,firstValueOnPage = '', lastValueOnPage = ''){
+  if(!firstValueOnPage || firstValueOnPage == ''){
+    lastValueOnPage = 0;
+  }
+  let films =  getFilms(sortingField, sortingOrder, limit, page, direction, firstValueOnPage, lastValueOnPage);
   return films;
 }
 

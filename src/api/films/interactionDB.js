@@ -9,7 +9,7 @@ export async function getFilms(
     sortingOrder = 'asc',
     limit = 3,
     pageNumber = 1,
-    direction = 'next',
+    direction = 'current',
     endBeforeValue = '',
     startAfterValue = '') {
     let gettedFilmList = [];
@@ -17,26 +17,17 @@ export async function getFilms(
     sortingByField = changeOrderByFieldNameToValid(sortingByField);
     let query = db.collection('films')
         .orderBy(sortingByField, sortingOrder);
-    if(direction == 'next' && sortingOrder == 'asc'){
-        query = query.startAfter(startPosition)
-            .limit(limit)
-    } else if (direction == 'prev' && sortingOrder == 'asc'){
-        query = query.endAt(startPosition)
-            .limit(limit)
-    } else if (direction == 'next' && sortingOrder == 'desc'){
-        console.log('start pos: '+startPosition);
-        console.log('st aft'+startAfterValue)
-        console.log('end bfr'+endBeforeValue)
-        query = query
-            .startAfter(startAfterValue)
-            .limit(limit)
-    } else if (direction == 'prev' && sortingOrder == 'desc'){
-        query = query
-            .endBefore(endBeforeValue)
+    if(direction == 'current'){
+        query = query.limit(limit)
+    }
+    if(direction == 'next'){
+        query = query.startAfter(startAfterValue)
             .limit(limit)
     }
-
-
+    if (direction == 'prev'){
+        query = query.endBefore(endBeforeValue)
+            .limitToLast(limit)
+    }
     await query
         .get()
         .then((snapshot) => {
@@ -53,27 +44,6 @@ export async function getFilms(
             console.log('there are error  ' + error);
             gettedFilmList = null;
         });
-
-
-    // await db.collection('films')
-    //     .orderBy(sortingByField, sortingOrder)
-    //     .limit(limit)
-    //     .startAfter(startPosition)
-    //     .get()
-    //     .then((snapshot) => {
-    //         snapshot.docs.forEach(item => {
-    //             if (item) {
-    //                 let film = castToFilmClass(item.data());
-    //                 gettedFilmList.push(film);
-    //             }
-    //         });
-    //         if (gettedFilmList.length == 0){
-    //             gettedFilmList = null;
-    //         }
-    //     }).catch((error) => {
-    //         console.log('there are error  ' + error);
-    //         gettedFilmList = null;
-    //     });
     return gettedFilmList;
 }
 
@@ -96,30 +66,23 @@ function castToFilmClass(dataToCast) {
     return new Film(data);
 }
 
-export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1){
-
-    let nextPageContent = await getFilms(sortingField, sortingOrder,limit,(page+1),'next');
+export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1, firstValueOnPage, lastValueOnPage){
+    let nextPageContent = await getFilms(sortingField, sortingOrder,limit,(page),'next', firstValueOnPage,lastValueOnPage);
     if(!nextPageContent || nextPageContent.length == 0){
         return false
     }
-    console.log('get from next page');
-    console.log(nextPageContent);
-    console.log('====================')
     return true
 }
 
-export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1){
+export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1, firstValueOnPage, lastValueOnPage){
     if(page<=0){
         return false
     }
 
-    let previousPageContent = await getFilms(sortingField, sortingOrder, limit, (page), 'prev')
+    let previousPageContent = await getFilms(sortingField, sortingOrder, limit, (page), 'prev', firstValueOnPage, lastValueOnPage)
     if(!previousPageContent || previousPageContent.length == 0){
         return false;
     }
-    console.log('get from prev page exist')
-    console.log(previousPageContent)
-    console.log('============================')
     return true;
 
 }
