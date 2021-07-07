@@ -1,27 +1,16 @@
 import {People} from '../../utils/models/people';
 import {peopleRef} from "../firebaseSettings";
+import {getRequestToAPI} from "../firestoreCommunication";
 
 export async function getPeopleListByPrimaryKeys(pkList){
     let peoplesList = []
-    await peopleRef
-        .where('pk','in',pkList)
-        .get()
-        .then((snapshot)=>{
-            snapshot.docs.forEach(item=>{
-                peoplesList.push(castToPeopleClass(item.data()));
-            })
-            if(peoplesList.length == 0){
-                peoplesList = [];
-            }
-        })
-        .catch((error)=>{
-            console.log('there are error: '+error);
-            peoplesList = []
-        });
+    let query = peopleRef
+        .where('pk','in',pkList);
+    peoplesList = await getRequestToAPI(query,'people');
     return peoplesList;
 }
 
-function castToPeopleClass(doc){
+export function castToPeopleClass(doc){
     let data = doc.fields;
     data.pk = doc.pk;
     return new People(data);

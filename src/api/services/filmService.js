@@ -65,7 +65,7 @@ function changeOrderByFieldNameToValid(fieldName) {
  * @param dataToCast
  * @return {Film}
  */
-function castToFilmClass(dataToCast) {
+export function castToFilmClass(dataToCast) {
     let data = dataToCast.fields;
     data.pk = dataToCast.pk;
     return new Film(data);
