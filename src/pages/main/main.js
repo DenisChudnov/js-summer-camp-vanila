@@ -1,7 +1,7 @@
 import './main.css';
 import '../../components/header/header.js';
 import '../../styles/style.css'
-import {isNextPageExist, isPreviousPageExist, getFilms} from "../../api/films/interactionDB";
+import {isNextPageExist, isPreviousPageExist, getFilms, searchByTitle} from "../../api/films/interactionDB";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
 let filmList = [];
@@ -67,8 +67,12 @@ previousPageButton.addEventListener('click',loadPreviousPage);
 
 nextPageButton.addEventListener('click',loadNextPage);
 
-searchInput.addEventListener('keyup',()=>{
+searchInput.addEventListener('keyup',async ()=>{
   console.log('we need to search: '+searchInput.value);
+  let searchingValue = searchInput.value
+  let result = await searchByTitle(searchingValue, filmsCountOnPage);
+  console.log('result of search is...');
+  console.log(result)
 })
 
 function changeFilmsCountOnPage(e){

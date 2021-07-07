@@ -78,12 +78,44 @@ export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'a
     if(page<=0){
         return false
     }
-
     let previousPageContent = await getFilms(sortingField, sortingOrder, limit, (page), 'prev', firstValueOnPage, lastValueOnPage)
     if(!previousPageContent || previousPageContent.length == 0){
         return false;
     }
     return true;
-
 }
 
+/**
+ *
+ * @param value
+ * @param limit
+ * @return {Promise<void>}
+ */
+export async function searchByTitle(value, limit){
+   let query = db.collection('films')
+       .where('fields.title', '>=', value)
+       .where('fields.title','<=',value+'\uf8ff')
+
+       .limit(limit);
+
+   let gettedFilmList = [];
+
+   await query.get()
+       .then((snapshot) => {
+           snapshot.docs.forEach(item => {
+               if (item) {
+                   let film = castToFilmClass(item.data());
+                   gettedFilmList.push(film);
+                   console.log(item.data().fields.title);
+               }
+           });
+           if (gettedFilmList.length == 0){
+               gettedFilmList = null;
+           }
+       }).catch((error) => {
+           console.log('there are error  ' + error);
+           gettedFilmList = null;
+       });
+   return gettedFilmList;
+
+}
