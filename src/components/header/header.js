@@ -1,5 +1,5 @@
 import {checkUserInLocalStorage} from '../../utils/authLocalStorage';
-import {logout} from '../../api/users/auth';
+import {logout} from '../../api/services/auth';
 
 class Header extends HTMLElement {
   constructor() {
@@ -10,7 +10,7 @@ class Header extends HTMLElement {
     this.innerHTML = '    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">\n' +
             '        <div class="container-fluid">\n' +
             '            <a class="navbar-brand" href="../">\n' +
-            '                <span>will be logo</span>\n' +
+            '                <span>LOGO.png :)</span>\n' +
             '            </a>\n' +
             '            <div class="collapse navbar-collapse" id="navbarText">\n' +
             '                <ul class="navbar-nav me-auto mb-2 mb-lg-0">\n' +

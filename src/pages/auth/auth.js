@@ -1,6 +1,6 @@
 import './auth.css';
 import '../../styles/style.css';
-import {createNewUser, login, logout} from '../../api/users/auth.js';
+import {createNewUser, login, logout} from '../../api/services/auth.js';
 import {isEmailValid, isFieldValueLengthValid} from '../../utils/authValidator';
 import {checkUserInLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
 import '../../components/header/header.js';
