@@ -1,0 +1,8 @@
+.film {
+    display: flex;
+}
+
+#film-title {
+    align-content: center;
+    text-align: center;
+}

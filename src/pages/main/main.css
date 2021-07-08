@@ -1,0 +1,26 @@
+.table-film.hidden {
+    visibility: hidden;
+}s-list {
+    border: 2px solid black;
+    width: 100%;
+    cellspacing: 0;
+
+}
+
+.table-films-list th {
+    cursor: pointer;
+}
+
+.table-films-list .th-sort-asc::after {
+    content: "\25b4";
+}
+
+.table-films-list .th-sort-desc::after {
+    content: "\25be";
+}
+
+.table-films-list .th-sort-asc::after,
+.table-films-list .th-sort-desc::after {
+    margin-left: 5px;
+}
+

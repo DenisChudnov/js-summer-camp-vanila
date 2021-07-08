@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Film Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <header-component></header-component>
+    </header>
+    <main>
+        <div class="container">
+            <h1 id="film-title"></h1>
+            <div id="film-data">
+                <p class="film-desc-field"><b>Director:</b> <span id="director"></span></p>
+                <p class="film-desc-field"><b>Producer:</b> <span id="producer"></span></p>
+                <p class="film-desc-field"><b>Release date:</b> <span id="release-date"></span></p>
+                <p class="film-sinopsys" id="opening-crawl"></p>
+            </div>
+
+
+            <h2>In this film:</h2>
+            <div class="films-characters">
+                <h3>Film's characters:</h3>
+                <accordion-component></accordion-component>
+            </div>
+            <div class="films-planets">
+                <h3>Planets:</h3>
+                <accordion-component></accordion-component>
+            </div>
+            <div class="films-species">
+                <h3>Species:</h3>
+                <accordion-component></accordion-component>
+            </div>
+            <div class="films-starships">
+                <h3>Starships:</h3>
+                <accordion-component></accordion-component>
+            </div>
+            <div class="films-vehicles">
+                <h3>Vehicles:</h3>
+                <accordion-component></accordion-component>
+            </div>
+
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>
