@@ -1,68 +1,81 @@
+//there are import of some functions, styles and components
 import './main.css';
 import '../../components/header/header.js';
 import '../../styles/style.css'
 import {
   isNextPageExist,
   isPreviousPageExist,
-  getFilms,
   searchByTitle,
-  queryBuilder, newCheckNextPageExist, newCheckPrevPageExist
+  getFilmsQueryBuilder
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
+
+//there are variables for table managment
 let filmList = [];
-let filteredFilmList = [];
-let searchInput = document.getElementById('table-search-word');
-let filmTable = document.getElementById('table-films');
 let sortingField = 'pk';
 let sortingOrder = 'asc';
 let filmsCountOnPage = 3;
-let actualPageNumber = 1;
 const defaultSortingField = 'pk';
 const defaultSortingOrder = 'asc';
 const defaultFilmsCountOnPage = 3;
-const defaultActualPageNumber = 1;
-const defaultTableParams = {
-  sortingField:'pk',
-  sortingOrder:'asc',
-  limit:3,
-  paginateDirection:'current',
-  firstValueOnPage:0,
-  lastValueOnPage:3,
-  filterValue:''
-}
 
-let TableParams = defaultTableParams
-
-function tableParamsToDef(){
-  TableParams = {
-    sortingField:'pk',
-    sortingOrder:'asc',
-    limit:3,
-    paginateDirection:'current',
-    firstValueOnPage:0,
-    lastValueOnPage:3,
-    filterValue:''
-  }
-}
-
+//There are page element, which need to interaction
 let previousPageButton = document.getElementById('previous-page-button');
 let nextPageButton = document.getElementById('next-page-button');
+let searchInput = document.getElementById('table-search-word');
+let filmTable = document.getElementById('table-films');
 
-document.addEventListener('DOMContentLoaded', async ()=>{
+//document events listeners
+previousPageButton
+    .addEventListener('click',loadPreviousPage);
+
+nextPageButton
+    .addEventListener('click',loadNextPage);
+
+/**
+ * On start enter something in search input -
+ * we firstly cleaning up table content,
+ * and then - calling function to make a request
+ * for render all films, finded by title started with
+ * entered search value;
+ */
+searchInput
+    .addEventListener('keyup',async () => {
+  let searchingValue = searchInput.value;
+  let result = await searchByTitle(searchingValue, filmsCountOnPage);
+  cleanUpTable();
+  result.forEach(film=>{
+    renderFilmInTable(film);
+  })
+})
+
+/**
+ * On loaded DOM content we need to render film table.
+ * If user is logged in - table will include additional column
+ * with details button, which can open film detail page
+ * After this check - fill rendered table content by call renderUI function
+ */
+document
+    .addEventListener('DOMContentLoaded', async () => {
   if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
     cell.setAttribute('class','films-table-header')
     cell.appendChild(document.createTextNode('more...'))
     filmTable.rows[0].appendChild(cell);
   }
-  getFilmList2();
   renderUI();
 })
 
-document.getElementById('select-count')
+document
+    .getElementById('select-count')
     .addEventListener('change', changeFilmsCountOnPage, true);
 
+/**
+ * there are click listener for every table column name (excluded additional column with details button) ;
+ * On click on some column head - will calling sorting handler function - it work with column name and
+ * call sorting functions with asc by 1 click, desc by 2 click and without filtering on 3 click.
+ */
 document
     .querySelectorAll('.films-table-header')
     .forEach((headerCell, index)=>{
@@ -71,6 +84,16 @@ document
       })
     })
 
+
+/**
+ * Function for determinate
+ * sorting parameters: field and order;
+ * On first click on some column - select column name and order asc;
+ * On second - column name and order desc;
+ * on third - sorting is default - by primary key with asc order;
+ * and call render function
+ * @param index
+ */
 function sortingHandler(index){
   if (index == sortingField){
     if (sortingOrder == 'desc'){
@@ -83,64 +106,28 @@ function sortingHandler(index){
     sortingField = index;
     sortingOrder = defaultSortingOrder;
   }
-
-  tableParamsToDef();
-  TableParams.sortingField = sortingField;
-  TableParams.sortingOrder = sortingOrder;
-  getFilmList2();
-
-  sortingTable(sortingField, sortingOrder);
-}
-
-function sortingTable(fieldName, direction){
-  filmList = [];
-  actualPageNumber = defaultActualPageNumber;
   renderUI();
 }
 
-previousPageButton.addEventListener('click',loadPreviousPage);
-
-nextPageButton.addEventListener('click',loadNextPage);
-
-searchInput.addEventListener('keyup',async ()=>{
-  console.log('we need to search: '+searchInput.value);
-  let searchingValue = searchInput.value
-  if(searchingValue!=''){
-    TableParams.filterValue = searchingValue;
-    TableParams.sortingOrder = 'asc';
-    TableParams.sortingField = 'title';
-  } else if(searchingValue == ''){
-    console.log('search is empty')
-    TableParams.filterValue = '';
-    tableParamsToDef();
-  }
-
-  getFilmList2();
-
-  let result = await searchByTitle(searchingValue, filmsCountOnPage);
-  console.log('result of search is...');
-  console.log(result)
-  cleanUpTable();
-  result.forEach(film=>{
-    renderFilmInTable(film);
-  })
-
-})
-
+/**
+ * simple function for change films count on page value and calling render function
+ * @param e
+ */
 function changeFilmsCountOnPage(e){
   e.preventDefault();
   filmsCountOnPage = 1*(e.target.value);
-  actualPageNumber = defaultActualPageNumber;
-  filmList = [];
-  tableParamsToDef();
-  TableParams.limit = filmsCountOnPage;
-  getFilmList2();
-
   renderUI();
-
-
 }
 
+/**
+ * Function for render table content and prev and next buttons:
+ * source - is page, wich calling render (default = current),
+ * for render next or previous page - sourse is next or prev;
+ * there are call function, which interactive with API method with all needed parameters.
+ * and after get response from API - call render function for each responses films;
+ * @param source
+ * @return {Promise<void>}
+ */
 async function renderUI(source = 'current'){
   cleanUpTable();
   let lastValueOnPage = '';
@@ -153,7 +140,7 @@ async function renderUI(source = 'current'){
       lastValueOnPage = filmList[filmList.length-1][sortingField];
     }
 
-  filmList = await getFilmListFromAPI(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber,source,firstValueOnPage,lastValueOnPage);
+  filmList = await getFilmListFromAPI(sortingField,sortingOrder,filmsCountOnPage,source,firstValueOnPage,lastValueOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
   })
@@ -163,8 +150,8 @@ async function renderUI(source = 'current'){
   if(filmList[filmList.length-1]){
     lastValueOnPage = filmList[filmList.length-1][sortingField];
   }
-  let nextPageFilms = await isNextPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber, firstValueOnPage, lastValueOnPage);
-  let prevPageFilms = await isPreviousPageExist(sortingField,sortingOrder,filmsCountOnPage,actualPageNumber, firstValueOnPage, lastValueOnPage);
+  let nextPageFilms = await isNextPageExist(sortingField,sortingOrder,filmsCountOnPage, firstValueOnPage, lastValueOnPage);
+  let prevPageFilms = await isPreviousPageExist(sortingField,sortingOrder,filmsCountOnPage, firstValueOnPage, lastValueOnPage);
   if(!nextPageFilms){
     nextPageButton.classList.add('hidden');
   } else if (nextPageFilms){
@@ -177,37 +164,50 @@ async function renderUI(source = 'current'){
   }
 }
 
-async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage, page = defaultActualPageNumber, direction,firstValueOnPage = '', lastValueOnPage = ''){
+/**
+ * This is function for call service function, which communicate with API;
+ * Get all actual table parameters, return array of objects of film class
+ * @param sortingField
+ * @param sortingOrder
+ * @param limit
+ * @param direction
+ * @param firstValueOnPage
+ * @param lastValueOnPage
+ * @return {Promise<*[]>}
+ */
+async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage,  direction,firstValueOnPage = '', lastValueOnPage = ''){
   if(!firstValueOnPage || firstValueOnPage == ''){
     lastValueOnPage = 0;
   }
-  let films =  getFilms(sortingField, sortingOrder, limit, page, direction, firstValueOnPage, lastValueOnPage);
+  let films =  getFilmsQueryBuilder(sortingField, sortingOrder, limit, direction, firstValueOnPage, lastValueOnPage);
   return films;
 }
 
+/**
+ * Funtion for call render page content
+ * for NEXT page after current
+ * @return {Promise<void>}
+ */
 async function loadNextPage(){
-  TableParams.paginateDirection = 'next';
-  TableParams.firstValueOnPage = filmList[0][sortingField]
-  TableParams.lastValueOnPage = filmList[filmList.length-1][sortingField];
-  getFilmList2();
-
-  actualPageNumber++;
   console.log('next')
   renderUI('next');
 }
 
+/**
+ * function for call render page contenr
+ * for PREVIOUS page, before current
+ * @return {Promise<void>}
+ */
 async function loadPreviousPage(){
-
-  TableParams.paginateDirection = 'prev';
-  TableParams.firstValueOnPage = filmList[0][sortingField]
-  TableParams.lastValueOnPage = filmList[filmList.length-1][sortingField];
-  getFilmList2();
-
-  actualPageNumber--;
   console.log('prev');
   renderUI('prev');
 }
 
+/**
+ * Function for render table row;
+ * Get film class object, and render it, as table row;
+ * @param film
+ */
 function renderFilmInTable(film) {
   const row = filmTable.insertRow(filmTable.rows.length);
   const cell0 = row.insertCell(0);
@@ -230,20 +230,11 @@ function renderFilmInTable(film) {
   row.setAttribute('id', 'film-' + film.pk);
 }
 
+/**
+ * Function for remove all table rows
+ */
 function cleanUpTable(){
   document.querySelectorAll('.film-row').forEach(function (row){
     row.remove();
   })
-}
-
-async function getFilmList2(){
-  let NewList = await queryBuilder(TableParams);
-  console.log('new list...')
-  console.log(NewList)
-  TableParams.firstValueOnPage = NewList[0][sortingField]
-  TableParams.firstValueOnPage = NewList[(NewList.length-1)][sortingField]
-  console.log('next page exist: ')
-  console.log(await newCheckNextPageExist(TableParams));
-  console.log('prev page exist: ')
-  console.log(await newCheckPrevPageExist(TableParams));
 }

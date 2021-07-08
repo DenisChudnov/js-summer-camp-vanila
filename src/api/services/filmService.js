@@ -1,14 +1,14 @@
 import {Film} from '../../utils/models/film.js';
 import {filmsRef} from "../firebaseSettings";
+import {getRequestToAPI} from "../firestoreCommunication";
 
 /**
  *
  */
-export async function getFilms(
+export async function getFilmsQueryBuilder(
     sortingByField = 'pk',
     sortingOrder = 'asc',
     limit = 3,
-    pageNumber = 1,
     direction = 'current',
     endBeforeValue = '',
     startAfterValue = '',
@@ -42,9 +42,10 @@ export async function getFilms(
             .limitToLast(limit)
     }
 
-    let result = await makeRequestToAPI(query);
+    let result = await getRequestToAPI(query,'film');
     return result;
 }
+
 
 /**
  * simple function to make field names, getted from ui
@@ -76,13 +77,12 @@ export function castToFilmClass(dataToCast) {
  * @param sortingField
  * @param sortingOrder
  * @param limit
- * @param page
  * @param firstValueOnPage
  * @param lastValueOnPage
  * @return {Promise<boolean>}
  */
-export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1, firstValueOnPage, lastValueOnPage){
-    let nextPageContent = await getFilms(sortingField, sortingOrder,limit,(page),'next', firstValueOnPage,lastValueOnPage);
+export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3,  firstValueOnPage, lastValueOnPage){
+    let nextPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder,limit,'next', firstValueOnPage,lastValueOnPage);
     if(!nextPageContent || nextPageContent.length == 0){
         return false
     }
@@ -94,16 +94,12 @@ export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc',
  * @param sortingField
  * @param sortingOrder
  * @param limit
- * @param page
  * @param firstValueOnPage
  * @param lastValueOnPage
  * @return {Promise<boolean>}
  */
-export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3, page = 1, firstValueOnPage, lastValueOnPage){
-    if(page<=0){
-        return false
-    }
-    let previousPageContent = await getFilms(sortingField, sortingOrder, limit, (page), 'prev', firstValueOnPage, lastValueOnPage)
+export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3,  firstValueOnPage, lastValueOnPage){
+    let previousPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder, limit, 'prev', firstValueOnPage, lastValueOnPage)
     if(!previousPageContent || previousPageContent.length == 0){
         return false;
     }
@@ -122,35 +118,10 @@ export async function searchByTitle(value, limit){
        .where('fields.title','<=',value+'\uf8ff')
        .limit(limit);
 
-    let result = await makeRequestToAPI(query);
+    let result = await getRequestToAPI(query, 'film');
     return result;
 }
 
-/**
- *
- * @param query
- * @return {Promise<*[]>}
- */
-async function makeRequestToAPI(query){
-    let filmListFromAPI = [];
-    await query
-        .get()
-        .then((snapshot) => {
-            snapshot.docs.forEach(item => {
-                if (item) {
-                    let film = castToFilmClass(item.data());
-                    filmListFromAPI.push(film);
-                }
-            });
-            if (filmListFromAPI.length == 0){
-                filmListFromAPI = null;
-            }
-        }).catch((error) => {
-            console.log('there are error  ' + error);
-            filmListFromAPI = null;
-        });
-    return filmListFromAPI;
-}
 
 /**
  *
@@ -160,60 +131,7 @@ async function makeRequestToAPI(query){
 export async function getCurrentFilm(primaryKey){
     let query = filmsRef
         .where('pk','==',primaryKey);
-    let result = await makeRequestToAPI(query);
+    let result = await getRequestToAPI(query,'film');
     return result[0];
 }
 
-
-
-
-
-
-export async function queryBuilder(params){
-    console.log('params: ')
-    console.log(params)
-    let query = filmsRef
-        .orderBy(changeOrderByFieldNameToValid(params.sortingField), params.sortingOrder);
-
-    if(params.filterValue != ''){
-        query = query
-            .where(changeOrderByFieldNameToValid(params.sortingField), '>=', params.filterValue)
-            .where(changeOrderByFieldNameToValid(params.sortingField),'<=',params.filterValue+'\uf8ff')
-    }
-
-    if(params.paginateDirection == 'current'){
-        query = query
-            .limit(params.limit)
-    }
-
-    if(params.paginateDirection == 'next'){
-        query = query.startAfter(params.lastValueOnPage)
-            .limit(params.limit)
-    }
-
-    if (params.paginateDirection == 'prev'){
-        query = query.endBefore(params.firstValueOnPage)
-            .limitToLast(params.limit)
-    }
-    let result = await makeRequestToAPI(query);
-    return result;
-
-}
-
-export async function newCheckNextPageExist(params){
-    params.paginateDirection = 'next';
-    let nextPageContent = await queryBuilder(params);
-    if(!nextPageContent || nextPageContent.length == 0){
-        return false
-    }
-    return true
-}
-
-export async function newCheckPrevPageExist(params){
-    params.paginateDirection = 'prev';
-    let prevPageContent = await queryBuilder(params);
-    if(!prevPageContent || prevPageContent.length == 0){
-        return false
-    }
-    return true
-}
