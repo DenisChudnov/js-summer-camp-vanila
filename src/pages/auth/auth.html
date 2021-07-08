@@ -11,21 +11,17 @@
 </header>
 <main>
     <header-component></header-component>
-
-<!--    <button class="btn btn-dark" id="check">check auth</button>-->
-<!--    <button class="btn btn-danger" id="logout">logout</button>-->
-
     <div class="container hidden" id="sign-up-container">
         <form class="form-signin" id="sign-up-form">
             <h1 class="h3 mb-3 font-weight-normal">Registration form</h1>
             <div class="mb-3">
-                <label for="inputEmail1" class="form-label sr-only">Email address</label>
-                <input type="email" class="form-control" id="inputEmail1" placeholder="Email address" maxlength="80" required autofocus aria-describedby="emailHelp">
+                <label for="registrationEmail" class="form-label sr-only">Email address</label>
+                <input type="email" class="form-control" id="registrationEmail" placeholder="Email address" maxlength="80" required autofocus aria-describedby="emailHelp">
                 <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
-                <label for="inputPassword1" class="form-label sr-only">Password</label>
-                <input type="password" class="form-control" id="inputPassword1" placeholder="Password" maxlength="80" required>
+                <label for="registrationPassword" class="form-label sr-only">Password</label>
+                <input type="password" class="form-control" id="registrationPassword" placeholder="Password" maxlength="80" required>
             </div>
             <button type="button" class="btn btn-primary" id="sign-up-button">Sign Up</button>
             <button type="button" class="btn btn-light" id="show-signin-form">To Login</button>
@@ -36,13 +32,13 @@
         <form id="sign-in-form" class="form-signin">
             <h1 class="h3 mb-3 font-weight-normal">Login form</h1>
             <div class="mb-3">
-                <label for="inputEmail2" class="form-label sr-only">Email address</label>
-                <input type="email" class="form-control" id="inputEmail2" placeholder="Email address" maxlength="80" aria-describedby="emailHelp2" required autofocus>
+                <label for="loginEmail" class="form-label sr-only">Email address</label>
+                <input type="email" class="form-control" id="loginEmail" placeholder="Email address" maxlength="80" aria-describedby="emailHelp2" required autofocus>
                 <div id="emailHelp2" class="form-text">We'll never share your email with anyone else.</div>
             </div>
             <div class="mb-3">
-                <label for="inputPassword2" class="form-label">Password</label>
-                <input type="password" class="form-control" id="inputPassword2" placeholder="Password" required>
+                <label for="loginPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="loginPassword" placeholder="Password" required>
             </div>
             <button type="button" class="btn btn-primary" id="sign-in-button">Sign In</button>
             <button type="button" class="btn btn-light" id="show-signup-form">To Registation</button>

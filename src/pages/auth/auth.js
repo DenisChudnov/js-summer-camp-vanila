@@ -6,6 +6,25 @@ import {checkUserInLocalStorage, removeUserFromLocalStorage} from '../../utils/a
 import '../../components/header/header.js';
 import {setAuthButtonText} from '../../components/header/header';
 
+import '../../components/base.js';
+import '../../components/modal/modal.js';
+import '../../components/modal/modal.css';
+
+/**
+ * For remove all alert, i made custom modal, which need for parameters.
+ * @type {{close(): void, open(): (void|undefined)} & {setContent(*): void, destroy(): void}}
+ */
+const msgModal = $.modal({
+  title: 'Attention',
+  closable: true,
+  width: '300px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+      msgModal.close();
+    }},
+  ],
+});
+
 document
   .getElementById('show-signin-form')
   .addEventListener('click', ()=>{
@@ -24,16 +43,18 @@ document
   .getElementById('sign-up-button')
   .addEventListener('click', () => {
     const signUpForm = document.getElementById('sign-up-form');
-    const email = signUpForm.inputEmail1.value;
-    const password = signUpForm.inputPassword1.value;
+    const email = signUpForm.registrationEmail.value;
+    const password = signUpForm.registrationPassword.value;
     if (isFieldValueLengthValid(email) && isFieldValueLengthValid(password)){
       if (isEmailValid(email)) {
-        createNewUser(email, password);
+        createNewUser(email, password, function (result, message = 'Success!'){
+          openModalWindow(message);
+        });
       } else {
-        alert('Invalid email');
+        openModalWindow('Invalid email');
       }
     } else {
-      alert('email and password length should be more, than 5 symbols and less, than 80 symbols');
+      openModalWindow('email and password length should be more, than 5 symbols and less, than 80 symbols');
     }
   });
 
@@ -41,28 +62,25 @@ document
   .getElementById('sign-in-button')
   .addEventListener('click', () => {
     const signInForm = document.getElementById('sign-in-form');
-    const email = signInForm.inputEmail2.value;
-    const password = signInForm.inputPassword2.value;
-    login(email, password, function (){
-        window.open('./','_self');
+    const email = signInForm.loginEmail.value;
+    const password = signInForm.loginPassword.value;
+    login(email, password, function (result, message = 'Success!'){
+      if (result == 'success'){
+        window.open('./', '_self');
+      } else {
+        openModalWindow(message);
+      }
     });
   });
 
-document
-  .getElementById('check')
-  .addEventListener('click', ()=>{
-    console.log('check');
-    if (checkUserInLocalStorage()) alert('there are exist active user'); else {
-      alert('no users authenticated');
-    }
-  });
 
-
-document
-  .getElementById('logout')
-  .addEventListener('click', ()=>{
-    console.log('logout');
-    logout();
-    setAuthButtonText();
-    console.log('User was logged out');
-  });
+/**
+ * Function for call custom modal window
+ * @param message string - message, which will displayed on modal window.
+ */
+function openModalWindow(message){
+  msgModal.setContent(`
+      <p>${message}</p>
+    `);
+  msgModal.open();
+}

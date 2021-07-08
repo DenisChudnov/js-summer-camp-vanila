@@ -1,17 +1,16 @@
-//there are import of some functions, styles and components
+//There are import of some functions, styles and components
 import './main.css';
 import '../../components/header/header.js';
 import '../../styles/style.css'
 import {
   isNextPageExist,
   isPreviousPageExist,
-  searchByTitle,
   getFilmsQueryBuilder
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
 
-//there are variables for table managment
+//There are variables for table managment
 let filmList = [];
 let sortingField = 'pk';
 let sortingOrder = 'asc';
@@ -21,12 +20,12 @@ const defaultSortingOrder = 'asc';
 const defaultFilmsCountOnPage = 3;
 
 //There are page element, which need to interaction
-let previousPageButton = document.getElementById('previous-page-button');
-let nextPageButton = document.getElementById('next-page-button');
-let searchInput = document.getElementById('table-search-word');
-let filmTable = document.getElementById('table-films');
+const previousPageButton = document.getElementById('previous-page-button');
+const nextPageButton = document.getElementById('next-page-button');
+const searchInput = document.getElementById('table-search-word');
+const filmTable = document.getElementById('table-films');
 
-//document events listeners
+//Document events listeners
 previousPageButton
     .addEventListener('click',loadPreviousPage);
 
@@ -43,7 +42,7 @@ nextPageButton
 searchInput
     .addEventListener('keyup',async () => {
   let searchingValue = searchInput.value;
-  let result = await searchByTitle(searchingValue, filmsCountOnPage);
+  let result = await getFilmsQueryBuilder(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
   cleanUpTable();
   result.forEach(film=>{
     renderFilmInTable(film);
@@ -72,7 +71,7 @@ document
     .addEventListener('change', changeFilmsCountOnPage, true);
 
 /**
- * there are click listener for every table column name (excluded additional column with details button) ;
+ * There are click listener for every table column name (excluded additional column with details button) ;
  * On click on some column head - will calling sorting handler function - it work with column name and
  * call sorting functions with asc by 1 click, desc by 2 click and without filtering on 3 click.
  */
@@ -110,7 +109,7 @@ function sortingHandler(index){
 }
 
 /**
- * simple function for change films count on page value and calling render function
+ * Simple function for change films count on page value and calling render function
  * @param e
  */
 function changeFilmsCountOnPage(e){
@@ -189,17 +188,15 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
  * @return {Promise<void>}
  */
 async function loadNextPage(){
-  console.log('next')
   renderUI('next');
 }
 
 /**
- * function for call render page contenr
+ * Function for call render page contenr
  * for PREVIOUS page, before current
  * @return {Promise<void>}
  */
 async function loadPreviousPage(){
-  console.log('prev');
   renderUI('prev');
 }
 
@@ -223,7 +220,7 @@ function renderFilmInTable(film) {
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
     let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = "<a href='../details.html?pk=+"+film.pk+"'><button class='btn btn-light'>Details</button></a>"
+    detailsButton.innerHTML = `<a href='../details.html?pk=+${film.pk}'><button class='btn btn-light'>Details</button></a>`
     cell5.appendChild(detailsButton);
   }
   row.setAttribute('class', 'film-row');

@@ -1,10 +1,11 @@
 .table-film.hidden {
     visibility: hidden;
-}s-list {
+}
+
+.s-list {
     border: 2px solid black;
     width: 100%;
     cellspacing: 0;
-
 }
 
 .table-films-list th {

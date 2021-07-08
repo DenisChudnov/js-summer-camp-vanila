@@ -1,3 +1,7 @@
+/**
+ * Firebase configuration.
+ * @type {{storageBucket: string, apiKey: string, messagingSenderId: string, appId: string, projectId: string, measurementId: string, authDomain: string}}
+ */
 export const firebaseConfig = {
   apiKey: 'AIzaSyBUayTW7tjvvgGPKev38XV6t43TYDCotAk',
   authDomain: 'js-summer-camp-16dd2.firebaseapp.com',

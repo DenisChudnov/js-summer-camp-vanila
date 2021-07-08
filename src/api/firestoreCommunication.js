@@ -25,13 +25,9 @@ export async function getRequestToAPI(query, entity){
                     responseFromAPI.push(castItemDataToEntityClass(item.data(), entity));
                 }
             });
-            if(responseFromAPI.length == 0){
-                responseFromAPI = null;
-            }
         })
         .catch((error)=>{
-            console.log('There are some error on getting data from API: '+error);
-            responseFromAPI = null;
+            console.error('There are some error on getting data from API: '+error);
         })
     return responseFromAPI;
 }

@@ -2,7 +2,7 @@
     display: flex;
 }
 
-#film-title {
+.film-title {
     align-content: center;
     text-align: center;
 }

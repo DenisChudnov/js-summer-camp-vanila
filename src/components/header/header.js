@@ -1,30 +1,33 @@
 import {checkUserInLocalStorage} from '../../utils/authLocalStorage';
 import {logout} from '../../api/services/auth';
 
+/**
+ * Class for create the same HTML element on all pages, where <header-component> included
+ * return connected callback value to HTML
+ */
 class Header extends HTMLElement {
   constructor() {
     super();
   }
 
   connectedCallback(){
-    this.innerHTML = '    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">\n' +
-            '        <div class="container-fluid">\n' +
-            '            <a class="navbar-brand" href="../">\n' +
-            '                <span>LOGO.png :)</span>\n' +
-            '            </a>\n' +
-            '            <div class="collapse navbar-collapse" id="navbarText">\n' +
-            '                <ul class="navbar-nav me-auto mb-2 mb-lg-0">\n' +
-            '                    <li class="nav-item">\n' +
-            '                        <a class="nav-link" id="films-table-link">Films</a>\n' +
-            '                    </li>\n' +
-            '<!--                    <li class="nav-item">-->\n' +
-            '<!--                        <a class="nav-link" href="">About</a>-->\n' +
-            '<!--                    </li>-->\n' +
-            '                </ul>\n' +
-            '                <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>\n' +
-            '            </div>\n' +
-            '        </div>\n' +
-            '    </nav>';
+    this.innerHTML = `   
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../">
+                    <span>LOGO.png :)</span>
+                </a>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" id="films-table-link">Films</a>
+                        </li>
+                    </ul>
+                    <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>
+                </div>
+            </div>
+        </nav>
+       `;
   }
 
 }
@@ -32,8 +35,8 @@ class Header extends HTMLElement {
 
 customElements.get('header-component') || customElements.define('header-component', Header);
 
-let authButton = document.getElementById('auth-call-btn');
-let linkToFilmsPage = document.getElementById('films-table-link');
+const authButton = document.getElementById('auth-call-btn');
+const linkToFilmsPage = document.getElementById('films-table-link');
 
 document.addEventListener('DOMContentLoaded', ()=>{
   setAuthButtonText();

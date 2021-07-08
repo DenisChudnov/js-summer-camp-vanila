@@ -2,6 +2,9 @@
 import './details.css';
 import '../../components/header/header.js';
 import '../../components/accordion/accordion.js';
+import '../../components/base.js';
+import '../../components/modal/modal.js';
+import '../../components/modal/modal.css';
 import {checkUserInLocalStorage} from '../../utils/authLocalStorage';
 import {getCurrentFilm} from '../../api/services/filmService';
 import {getPeopleListByPrimaryKeys} from "../../api/services/peopleService";
@@ -19,6 +22,21 @@ let vehicles = [];
 let film;
 
 /**
+ * For remove all alert, i made custom modal, which need for parameters.
+ * @type {{close(): void, open(): (void|undefined)} & {setContent(*): void, destroy(): void}}
+ */
+const msgModal = $.modal({
+  title: 'Hey!',
+  closable: true,
+  width: '300px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+        msgModal.close();
+      }},
+  ],
+});
+
+/**
  * Listener for dom loaded event.
  * Additional check for user auth and return it to login page,
  * if user is not authenticated.
@@ -31,12 +49,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const urlParams = new URLSearchParams(queryString);
   const primaryKey = urlParams.get('pk');
   if (!checkUserInLocalStorage()){
-    alert('You should be authorized to watch this page, dude');
+    openModalWindow('You should be authorized to watch this page, dude');
     window.open('auth.html', '_self');
   } else {
     film = await getCurrentFilmData(primaryKey);
-    alert('welcome, dude. This page for "'+film.title+'" film.');
     displayFilmBasicDetails(film);
+    openModalWindow(`welcome, dudeauth.html. This page for ${film.title} film.`)
   }
 });
 
@@ -117,7 +135,7 @@ vehiclesAccordionElement.addEventListener('click', ()=>{
 
 
 /**
- * this function get integer key and return film object with equal primary key.
+ * This function get integer key and return film object with equal primary key.
  * @param key
  * @return {Promise<*>}
  */
@@ -156,13 +174,10 @@ async function fillCharactersList(){
     let listForQuery = film.characters.slice(i,i+10);
     if(listForQuery!=[] && listForQuery.length>0){
       let result = await getPeopleListByPrimaryKeys(listForQuery);
-      console.log(result)
       characters = characters.concat(result);
     }
   }
-
   characters.forEach(character=>{
-    console.log(character.name)
     let newLi = document.createElement('li');
     newLi.innerText = character.name;
     document.getElementById('characters-list').appendChild(newLi);
@@ -173,8 +188,6 @@ async function fillPlanetsList(){
   let count = film.planets.length;
   for(let i = 0; i<=count;i+=10){
     let listForQuery = film.planets.slice(i,i+10);
-    console.log('lfq')
-    console.log(listForQuery)
     if(listForQuery!=[] && listForQuery.length>0){
       let result = await getPlanetsByKeyList(listForQuery);
       planets = planets.concat(result);
@@ -233,4 +246,15 @@ async function fillVehiclesList(){
     newLi.innerText = spec.vehicle_class;
     document.getElementById('vehicles-list').appendChild(newLi);
   })
+}
+
+/**
+ * Function for call custom modal window
+ * @param message string - message, which will displayed on modal window.
+ */
+function openModalWindow(message){
+  msgModal.setContent(`
+      <p>${message}</p>
+    `);
+  msgModal.open();
 }

@@ -4,42 +4,46 @@ import {addUserToLocalStorage, checkUserInLocalStorage, removeUserFromLocalStora
 import {setAuthButtonText} from "../../components/header/header";
 
 /**
- *
- * @param email
- * @param password
+ * Function for registration with cred in params;
+ * @param email string
+ * @param password string
  */
-export function createNewUser(email, password) {
-    console.log('creating of new user with creds... '+email+', '+password);
+export function createNewUser(email, password, _callback) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       console.log('successfully create of user! ' + userCredential);
+        _callback(userCredential)
         return userCredential;
     })
     .catch((error) => {
-      console.log('something went wrong... ' + error);
+      console.error('something went wrong... ' + error);
+      _callback(error, error.message);
       return error;
     });
 }
 
 /**
- *
- * @param email
- * @param password
+ * Function for send creds to API and authorize;
+ * @param email string
+ * @param password string
+ * @param _callback function
  */
 export async function login(email, password, _callback) {
   auth.signInWithEmailAndPassword(email, password)
     .then(async (userCredenial) => {
-      console.log('success')
       await addUserToLocalStorage(auth.currentUser);
       setAuthButtonText();
-      _callback();
+      _callback('success');
     })
     .catch((error) => {
-      alert('Ooops, looks like something went wrong' + error);
-      console.log('something went wrong ' + error);
+        _callback('fail', error)
     });
 }
 
+/**
+ * Function for logged out and
+ * remove user from local storage
+ */
 export function logout(){
     removeUserFromLocalStorage();
 }

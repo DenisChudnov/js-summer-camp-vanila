@@ -1,14 +1,20 @@
 import './accordion.css';
 
+/**
+ * Accordion class - need for create new accordion element just as html element.
+ * Including element in HTML layout of page return connected callback value into HTML;
+ */
 class Accordion extends HTMLElement {
   constructor() {
     super();
   }
 
-  connectedCallback(){
-    this.innerHTML = '<button class="accordion-button-panel"></button>'+
-           ' <div class="accordion-content-panel">' +
-           ' </div> ';
+  connectedCallback() {
+    this.innerHTML = `
+        <button class="accordion-button-panel" type="button"></button>
+        <div class="accordion-content-panel">
+        </div> 
+        `;
   }
 
 }
@@ -16,11 +22,10 @@ class Accordion extends HTMLElement {
 
 customElements.get('accordion-component') || customElements.define('accordion-component', Accordion);
 
-
-let acc = document.getElementsByClassName('accordion-button-panel');
+const acc = document.getElementsByClassName('accordion-button-panel');
 
 for (let i = 0; i < acc.length; i++) {
-  acc[i].addEventListener('click', function() {
+  acc[i].addEventListener('click', function () {
     this.classList.toggle('active');
     let panel = this.nextElementSibling;
     if (panel.style.maxHeight) {
