@@ -1,6 +1,6 @@
 import {Planet} from '../../utils/models/planet';
-import {planetsRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {planetsRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for make request to API and get list of planets by primary keys list;

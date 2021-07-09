@@ -220,11 +220,11 @@ function renderFilmInTable(film) {
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
     let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href='../details.html?pk=+${film.pk}'><button class='btn btn-light'>Details</button></a>`
+    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-light'>Details</button></a>`
     cell5.appendChild(detailsButton);
   }
   row.setAttribute('class', 'film-row');
-  row.setAttribute('id', 'film-' + film.pk);
+  row.setAttribute('id', `film-${film.pk}`);
 }
 
 /**

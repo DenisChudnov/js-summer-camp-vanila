@@ -1,6 +1,6 @@
 import {Vehicle} from '../../utils/models/vehicle';
-import {vehiclesRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {vehiclesRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for get array of vehicle objects from the API by primary keys array;

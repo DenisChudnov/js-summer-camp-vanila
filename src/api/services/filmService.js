@@ -1,6 +1,6 @@
 import {Film} from '../../utils/models/film.js';
-import {filmsRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {filmsRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for make GET films query to API.
@@ -76,7 +76,7 @@ function changeOrderByFieldNameToValid(fieldName) {
  * @return {Film}
  */
 export function castToFilmClass(dataToCast) {
-    let data = dataToCast.fields;
+    const data = dataToCast.fields;
     data.pk = dataToCast.pk;
     return new Film(data);
 }
@@ -90,12 +90,14 @@ export function castToFilmClass(dataToCast) {
  * @param lastValueOnPage
  * @return {Promise<boolean>}
  */
-export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3,  firstValueOnPage, lastValueOnPage){
+export async function isNextPageExist(
+    sortingField = 'pk',
+    sortingOrder = 'asc',
+    limit = 3,
+    firstValueOnPage,
+    lastValueOnPage){
     const nextPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder,limit,'next', firstValueOnPage,lastValueOnPage);
-    if(!nextPageContent || nextPageContent.length == 0){
-        return false
-    }
-    return true
+    return !nextPageContent || nextPageContent.length == 0 ? false : true;
 }
 
 /**
@@ -107,12 +109,14 @@ export async function isNextPageExist(sortingField = 'pk', sortingOrder = 'asc',
  * @param lastValueOnPage
  * @return {Promise<boolean>}
  */
-export async function isPreviousPageExist(sortingField = 'pk', sortingOrder = 'asc', limit = 3,  firstValueOnPage, lastValueOnPage){
+export async function isPreviousPageExist(
+    sortingField = 'pk',
+    sortingOrder = 'asc',
+    limit = 3,
+    firstValueOnPage,
+    lastValueOnPage){
     const previousPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder, limit, 'prev', firstValueOnPage, lastValueOnPage)
-    if(!previousPageContent || previousPageContent.length == 0){
-        return false;
-    }
-    return true;
+    return !previousPageContent || previousPageContent.length == 0 ? false : true;
 }
 
 /**

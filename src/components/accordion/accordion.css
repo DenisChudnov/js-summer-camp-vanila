@@ -1,5 +1,13 @@
+:root{
+    --accordion-button-color: #eee;
+    --accordion-button-hover-color: #ccc ;
+    --accordion-button-after-color: #777;
+    --accordion-panel-color:white;
+
+}
+
 .accordion-button-panel {
-    background-color: #eee;
+    background-color: var(--accordion-button-color);
     color: #444;
     cursor: pointer;
     padding: 18px;
@@ -12,12 +20,12 @@
 }
 
 .active, .accordion-button-panel:hover {
-    background-color: #ccc;
+    background-color: var(--accordion-button-hover-color);
 }
 
 .accordion-button-panel:after {
     content: '\002B';
-    color: #777;
+    color: var(--accordion-button-after-color);
     font-weight: bold;
     float: right;
     margin-left: 5px;
@@ -29,7 +37,7 @@
 
 .accordion-content-panel {
     padding: 0 18px;
-    background-color: white;
+    background-color: var(--accordion-panel-color);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;

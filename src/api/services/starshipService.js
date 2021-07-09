@@ -1,6 +1,6 @@
 import {Starship} from '../../utils/models/starship';
-import {starshipsRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {starshipsRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for get starships object array from API by primary keys array;

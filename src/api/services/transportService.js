@@ -1,6 +1,6 @@
 import {Transport} from '../../utils/models/transport';
-import {transportRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {transportRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for get array of Transport objects by array of primary keys;

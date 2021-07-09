@@ -45,7 +45,8 @@ document
     const signUpForm = document.getElementById('sign-up-form');
     const email = signUpForm.registrationEmail.value;
     const password = signUpForm.registrationPassword.value;
-    if (isFieldValueLengthValid(email) && isFieldValueLengthValid(password)){
+    const fieldsLengthIsValid = (isFieldValueLengthValid(email) && isFieldValueLengthValid(password));
+    if (fieldsLengthIsValid){
       if (isEmailValid(email)) {
         createNewUser(email, password, function (result, message = 'Success!'){
           openModalWindow(message);

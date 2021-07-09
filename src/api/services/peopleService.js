@@ -1,6 +1,6 @@
 import {People} from '../../utils/models/people';
-import {peopleRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {peopleRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function with created and send query for get peoples list by PrimaryKeys list;

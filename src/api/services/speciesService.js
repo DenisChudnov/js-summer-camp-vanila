@@ -1,6 +1,6 @@
 import {Species} from '../../utils/models/species';
-import {speciesRef} from "../firebaseSettings";
-import {getRequestToAPI} from "../firestoreCommunication";
+import {speciesRef} from '../firebaseSettings';
+import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for get list of Species from API by list of primary keys;

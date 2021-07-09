@@ -1,3 +1,10 @@
+:root{
+    --modal-overlay-background-color:rgba(0, 0, 0, .5);
+    --modal-overlay-hidden-background-color:rgba(0, 0, 0, 0);
+    --modal-border-color:#eee;
+    --modal-background-color:#fff;
+
+}
 
 .vmodal {}
 
@@ -18,7 +25,7 @@
 }
 
 .vmodal.open .modal-overlay {
-    background: rgba(0, 0, 0, .5);
+    background: var(--modal-overlay-background-color);
 }
 
 .vmodal.hide .modal-window {
@@ -26,7 +33,7 @@
 }
 
 .vmodal.hide .modal-overlay {
-    background: rgba(0, 0, 0, 0);
+    background: var(--modal-overlay-hidden-background-color);
 }
 
 .modal-window, .modal-overlay {
@@ -40,14 +47,14 @@
     right: 0;
     left: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0);
+    background: var(--modal-overlay-background-color);
     transition: background .2s ease-in;
 }
 
 .modal-window {
     width: 600px;
     border-radius: 5px;
-    background: #fff;
+    background: var(--modal-background-color);
     margin: 0 auto;
     transform: translateY(-200px);
     transition: transform .2s ease-in;
@@ -57,7 +64,7 @@
     padding: 5px 10px;
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--modal-border-color);
 }
 
 .modal-title {
@@ -78,5 +85,5 @@
 
 .modal-footer {
     padding: 5px 10px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--modal-border-color);
 }

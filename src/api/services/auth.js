@@ -1,7 +1,6 @@
 import {auth} from '../firebaseSettings.js';
-import firebase from "firebase/app";
-import {addUserToLocalStorage, checkUserInLocalStorage, removeUserFromLocalStorage} from "../../utils/authLocalStorage";
-import {setAuthButtonText} from "../../components/header/header";
+import {addUserToLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
+import {setAuthButtonText} from '../../components/header/header';
 
 /**
  * Function for registration with cred in params;
@@ -11,12 +10,10 @@ import {setAuthButtonText} from "../../components/header/header";
 export function createNewUser(email, password, _callback) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
-      console.log('successfully create of user! ' + userCredential);
         _callback(userCredential)
         return userCredential;
     })
     .catch((error) => {
-      console.error('something went wrong... ' + error);
       _callback(error, error.message);
       return error;
     });

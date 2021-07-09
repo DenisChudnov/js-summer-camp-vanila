@@ -22,7 +22,7 @@ class Accordion extends HTMLElement {
 
 customElements.get('accordion-component') || customElements.define('accordion-component', Accordion);
 
-const acc = document.getElementsByClassName('accordion-button-panel');
+const acc = document.querySelectorAll('.accordion-button-panel');
 
 for (let i = 0; i < acc.length; i++) {
   acc[i].addEventListener('click', function () {
