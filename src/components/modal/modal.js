@@ -1,3 +1,8 @@
+import './modal.css';
+
+const customModal = {};
+window.customModal = customModal;
+
 Element.prototype.appendAfter = function(element) {
   element.parentNode.insertBefore(this, element.nextSibling);
 };
@@ -69,7 +74,7 @@ function _createModal(options) {
 * onOpen(): void
 * beforeClose(): boolean
 */
-$.modal = function(options) {
+customModal.modal = function(options) {
   const ANIMATION_SPEED = 200;
   const $modal = _createModal(options);
   let closing = false;
@@ -115,3 +120,79 @@ $.modal = function(options) {
     },
   });
 };
+
+/**
+ * For remove all alert, i made custom modal, which need for parameters.
+ * @type {{close(): void, open(): (void|undefined)} & {setContent(*): void, destroy(): void}}
+ */
+const errorModal = customModal.modal({
+  title: 'Error',
+  closable: true,
+  width: '400px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+        errorModal.close();
+      }},
+  ],
+});
+
+const attentionModal = customModal.modal({
+  title: 'Attention',
+  closable: true,
+  width: '300px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+        attentionModal.close();
+      }},
+  ],
+});
+
+const welcomeModal = customModal.modal({
+  title: 'Welcome',
+  closable: true,
+  width: '250px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+        welcomeModal.close();
+      }},
+  ],
+});
+
+const successModal = customModal.modal({
+  title: 'Success',
+  closable: true,
+  width: '200px',
+  footerButtons: [
+    {text: 'Close', type: 'primary', handler() {
+        successModal.close();
+      }},
+  ],
+});
+
+
+const modalWindowTypes = {
+  'error': errorModal,
+  'attention': attentionModal,
+  'welcome': welcomeModal,
+  'success': successModal,
+}
+
+
+
+function renderSelectedModalWindow(modal, message){
+  modal.setContent(`
+  <p>${message}</p>
+  `);
+  modal.open();
+}
+
+
+/**
+ *
+ * @param type
+ * @param message
+ */
+export function openModalWindow(type, message){
+  const selectedModalWindow = modalWindowTypes[type];
+  renderSelectedModalWindow(selectedModalWindow, message);
+}

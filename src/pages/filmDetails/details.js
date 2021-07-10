@@ -2,9 +2,6 @@
 import './details.css';
 import '../../components/header/header.js';
 import '../../components/accordion/accordion.js';
-import '../../components/base.js';
-import '../../components/modal/modal.js';
-import '../../components/modal/modal.css';
 import {checkUserInLocalStorage} from '../../utils/authLocalStorage';
 import {getCurrentFilm} from '../../api/services/filmService';
 import {getPeopleListByPrimaryKeys} from "../../api/services/peopleService";
@@ -13,6 +10,8 @@ import {getSpeciesByKeyList} from "../../api/services/speciesService";
 import {getStarshipsByKeyList} from "../../api/services/starshipService";
 import {getVehicleByKeyList} from "../../api/services/vehicleService";
 
+import {openModalWindow} from "../../components/modal/modal";
+
 //some variables for page managment
 let characters = [];
 let planets = [];
@@ -20,21 +19,6 @@ let species = [];
 let starships = [];
 let vehicles = [];
 let film;
-
-/**
- * For remove all alert, i made custom modal, which need for parameters.
- * @type {{close(): void, open(): (void|undefined)} & {setContent(*): void, destroy(): void}}
- */
-const msgModal = $.modal({
-  title: 'Hey!',
-  closable: true,
-  width: '300px',
-  footerButtons: [
-    {text: 'Close', type: 'primary', handler() {
-        msgModal.close();
-      }},
-  ],
-});
 
 /**
  * Listener for dom loaded event.
@@ -47,14 +31,14 @@ const msgModal = $.modal({
 document.addEventListener('DOMContentLoaded', async () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const primaryKey = urlParams.get('pk')*1;
+  const primaryKey = Number(urlParams.get('pk'));
   if (!checkUserInLocalStorage()){
-    openModalWindow('You should be authorized to watch this page, dude');
+    openModalWindow('error', 'You should be authorized to watch this page, dude');
     window.open('auth.html', '_self');
   } else {
     film = await getCurrentFilmData(primaryKey);
     displayFilmBasicDetails(film);
-    openModalWindow(`welcome, dude! This page for ${film.title} film.`)
+    openModalWindow('welcome', `welcome, dude! This page for ${film.title} film.`)
   }
 });
 
@@ -245,15 +229,4 @@ async function fillVehiclesList(){
     newLi.innerText = spec.vehicle_class;
     document.getElementById('vehicles-list').appendChild(newLi);
   })
-}
-
-/**
- * Function for call custom modal window
- * @param message string - message, which will displayed on modal window.
- */
-function openModalWindow(message){
-  msgModal.setContent(`
-      <p>${message}</p>
-    `);
-  msgModal.open();
 }

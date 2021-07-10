@@ -114,7 +114,7 @@ function sortingHandler(index){
  */
 function changeFilmsCountOnPage(e){
   e.preventDefault();
-  filmsCountOnPage = 1*(e.target.value);
+  filmsCountOnPage = Number(e.target.value);
   renderUI();
 }
 
