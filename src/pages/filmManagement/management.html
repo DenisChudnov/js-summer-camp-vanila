@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Film Managment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <header-component></header-component>
+    </header>
+    <main>
+        <div id="content">
+            <form id="film-edit-form" class="form-control" name="editFilmForm">
+                <div class="md-3 mb-3">
+                    <label for="film-title"><strong>Title: </strong></label>
+                    <input required type="text" name="film-title" id="film-title" />
+                </div>
+                <div class="md-3 mb-3">
+                    <label for="film-director"><strong>Director: </strong></label>
+                    <input required type="text" name="film-director" id="film-director" />
+                </div>
+                <div class="md-3 mb-3">
+                    <label for="film-producer"><strong>Producer: </strong></label>
+                    <input required type="text" name="film-producer" id="film-producer" />
+                </div>
+                <div class="md-3 mb-3">
+                    <label for="film-episode"><strong>Episode number: </strong></label>
+                    <input required type="number" name="film-episode" id="film-episode" />
+                </div>
+                <div class="md-3 mb-3">
+                    <label for="film-opening-crawl"><strong>Opening crawl: </strong></label>
+                    <textarea rows="8" class="form-control" required type="text" name="film-opening-crawl" id="film-opening-crawl" />
+                </div>
+                <div class="md-3 mb-3">
+                    <label for="film-release-date"><strong>Release date: </strong></label>
+                    <input required type="date" name="film-release-date" id="film-release-date" />
+                </div>
+
+            </form>
+        </div>
+    </main>
+    <footer>
+
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+</body>
+</html>

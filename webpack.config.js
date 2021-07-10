@@ -7,6 +7,7 @@ module.exports = {
     main: './src/pages/main/main.js',
     auth: './src/pages/auth/auth.js',
     details:'./src/pages/filmDetails/details.js',
+    management:'./src/pages/filmManagement/management.js',
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -33,6 +34,11 @@ module.exports = {
       filename: 'details.html',
       template: './src/pages/filmDetails/details.html',
       chunks: ['details'],
+    }),
+    new HTMLPlugin({
+      filename: 'management.html',
+      template: './src/pages/filmManagement/management.html',
+      chunks: ['management'],
     }),
     new CleanWebpackPlugin(),
   ],

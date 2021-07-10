@@ -32,6 +32,15 @@ previousPageButton
 nextPageButton
     .addEventListener('click',loadNextPage);
 
+
+document.getElementById('managment-check').addEventListener('click',()=>{
+  window.open('../management.html?pk=1','_self');
+})
+
+document.getElementById('new-check').addEventListener('click',()=>{
+  window.open('../management.html','_self');
+})
+
 /**
  * On start enter something in search input -
  * we firstly cleaning up table content,
