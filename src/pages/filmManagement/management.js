@@ -4,7 +4,7 @@ import '../../components/header/header.js';
 import '../../components/accordion/accordion.js';
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {Film} from "../../utils/models/film";
-import {createNewFilm, getCurrentFilm} from "../../api/services/filmService";
+import {getCurrentFilm, sendFilmDataToServer} from "../../api/services/filmService";
 import {openModalWindow} from '../../components/modal/modal.js'
 import {getFullPeoplesList} from "../../api/services/peopleService";
 import {getFullPlanetsList} from "../../api/services/planetService";
@@ -255,7 +255,7 @@ function getFilmDataFromForm(){
     film.planets = getAllCheckedRowsFromSelector('planet');
     film.species = getAllCheckedRowsFromSelector('species');
     film.starships = getAllCheckedRowsFromSelector('starships');
-    film.vehicle = getAllCheckedRowsFromSelector('vehicles');
+    film.vehicles = getAllCheckedRowsFromSelector('vehicles');
 }
 
 /**
@@ -280,11 +280,12 @@ function isFilmValid(){
 
 async function createFilm(){
     getFilmDataFromForm();
-    await createNewFilm(film);
+    await sendFilmDataToServer(film);
     console.log('create')
 }
 
-function updateFilm(){
+async function updateFilm(){
     getFilmDataFromForm();
+    await sendFilmDataToServer(film);
     console.log('update')
 }

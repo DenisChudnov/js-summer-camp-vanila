@@ -87,19 +87,32 @@ export async function getCurrentFilm(primaryKey){
     return result[0];
 }
 
-export async function createNewFilm(filmData){
+export async function sendFilmDataToServer(filmData){
     const data = transformFilmObjectToFBDoc(filmData);
-    const query = filmsRef
-        .doc();
-    await postRequestToAPI(query, JSON.parse(JSON.stringify(data)));
+    let query = filmsRef;
+    if (await getCurrentFilm(data.pk)){
+      let refer = await  filmsRef
+            .where('pk','==',data.pk)
+            .get()
+            .then((snapshot)=>{
+                return snapshot.docs.map((doc)=>{
+                    return doc.id;
+                })
+            });
+        query = query.doc(refer[0]);
+    } else {
+        query = query
+            .doc();
+    }
+    await postRequestToAPI(query, data);
 }
 
 function transformFilmObjectToFBDoc(film){
     const pk = film.pk;
     delete film.pk;
-    return {
+    return JSON.parse(JSON.stringify({
         pk:pk,
         model:'resources.film',
         fields:film
-    }
+    }))
 }

@@ -67,13 +67,43 @@ searchInput
 document
     .addEventListener('DOMContentLoaded', async () => {
   if(checkUserInLocalStorage()){
-    let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
-    cell.appendChild(document.createTextNode('more...'))
-    filmTable.rows[0].appendChild(cell);
+    renderOfDetailsColumn();
+    renderOfManageColumn();
+    renderOfDeleteColumn();
+    // let cell = document.createElement("th");
+    // cell.setAttribute('class','films-table-header')
+    // cell.appendChild(document.createTextNode('more...'))
+    // filmTable.rows[0].appendChild(cell);
   }
   renderUI();
 })
+
+function renderOfDetailsColumn(){
+  if(checkUserInLocalStorage()){
+    let cell = document.createElement("th");
+    cell.setAttribute('class','films-table-header')
+    cell.appendChild(document.createTextNode('Info'))
+    filmTable.rows[0].appendChild(cell);
+  }
+}
+
+function renderOfManageColumn(){
+  if(checkUserInLocalStorage()){
+    let cell = document.createElement("th");
+    cell.setAttribute('class','films-table-header')
+    cell.appendChild(document.createTextNode('Edit'))
+    filmTable.rows[0].appendChild(cell);
+  }
+}
+
+function renderOfDeleteColumn(){
+  if(checkUserInLocalStorage()){
+    let cell = document.createElement("th");
+    cell.setAttribute('class','films-table-header')
+    cell.appendChild(document.createTextNode('Delete'))
+    filmTable.rows[0].appendChild(cell);
+  }
+}
 
 document
     .getElementById('select-count')
@@ -252,8 +282,16 @@ function renderFilmInTable(film) {
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
     let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-light'>Details</button></a>`
+    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-info'>Details</button></a>`
     cell5.appendChild(detailsButton);
+    const cell6 = row.insertCell(6);
+    let editButton = document.createElement("a");
+    editButton.innerHTML = `<a href='../management.html?pk=${film.pk}'><button class="btn btn-success">Edit</button></a>`
+    cell6.appendChild(editButton);
+    const cell7 = row.insertCell(7);
+    let deleteButton = document.createElement("a");
+    deleteButton.innerHTML = `<a><button class="btn btn-danger">Delete</button></a>`
+    cell7.appendChild(deleteButton);
   }
   row.setAttribute('class', 'film-row');
   row.setAttribute('id', `film-${film.pk}`);

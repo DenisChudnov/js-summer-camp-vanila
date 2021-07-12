@@ -58,8 +58,6 @@ function castItemDataToEntityClass(doc, entity){
 }
 
 export async function postRequestToAPI(query, value){
-    console.log(value);
-    console.log(value);
     return await query
         .set(value)
         .then(()=>{
