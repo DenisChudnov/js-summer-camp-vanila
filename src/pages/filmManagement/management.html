@@ -31,13 +31,35 @@
                 </div>
                 <div class="md-3 mb-3">
                     <label for="film-opening-crawl"><strong>Opening crawl: </strong></label>
-                    <textarea rows="8" class="form-control" required type="text" name="film-opening-crawl" id="film-opening-crawl" />
+                    <textarea rows="8" class="form-control" required type="text" name="film-opening-crawl" id="film-opening-crawl">
+                    </textarea>
                 </div>
                 <div class="md-3 mb-3">
                     <label for="film-release-date"><strong>Release date: </strong></label>
                     <input required type="date" name="film-release-date" id="film-release-date" />
                 </div>
-
+                <div class="films-characters">
+                    <h3>Characters:</h3>
+                    <accordion-component></accordion-component>
+                </div>
+                <div class="films-planets">
+                    <h3>Planets:</h3>
+                    <accordion-component></accordion-component>
+                </div>
+                <div class="films-species">
+                    <h3>Species:</h3>
+                    <accordion-component></accordion-component>
+                </div>
+                <div class="films-starships">
+                    <h3>Starships:</h3>
+                    <accordion-component></accordion-component>
+                </div>
+                <div class="films-vehicles">
+                    <h3>Vehicles:</h3>
+                    <accordion-component></accordion-component>
+                </div>
+                <button type="button" class="btn btn-success" id="create-film-button">Create</button>
+                <button type="button" class="btn btn-primary" id="update-film-button">Edit</button>
             </form>
         </div>
     </main>

@@ -13,13 +13,18 @@ export async function getStarshipsByKeyList(keyList){
     return await getRequestToAPI(query,'starship');
 }
 
+export async function getFullStarshipsList(){
+    const query = starshipsRef;
+    return await getRequestToAPI(query, 'starship');
+}
+
 /**
  * Function for transform doc from API to object with Starship class
  * @param doc
  * @return {Starship}
  */
 export function castToStarshipClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Starship(data);
 }

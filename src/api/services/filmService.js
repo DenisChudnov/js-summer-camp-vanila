@@ -1,6 +1,6 @@
 import {Film} from '../../utils/models/film.js';
 import {filmsRef} from '../firebaseSettings';
-import {getRequestToAPI} from '../firestoreCommunication';
+import {getRequestToAPI, postRequestToAPI} from '../firestoreCommunication';
 
 /**
  * Function for make GET films query to API.
@@ -87,3 +87,19 @@ export async function getCurrentFilm(primaryKey){
     return result[0];
 }
 
+export async function createNewFilm(filmData){
+    const data = transformFilmObjectToFBDoc(filmData);
+    const query = filmsRef
+        .doc();
+    await postRequestToAPI(query, JSON.parse(JSON.stringify(data)));
+}
+
+function transformFilmObjectToFBDoc(film){
+    const pk = film.pk;
+    delete film.pk;
+    return {
+        pk:pk,
+        model:'resources.film',
+        fields:film
+    }
+}

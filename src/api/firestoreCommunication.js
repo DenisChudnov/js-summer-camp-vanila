@@ -56,3 +56,16 @@ function castItemDataToEntityClass(doc, entity){
     const castEntity = classesCastCollection[entity];
     return castEntity(doc);
 }
+
+export async function postRequestToAPI(query, value){
+    console.log(value);
+    console.log(value);
+    return await query
+        .set(value)
+        .then(()=>{
+            openModalWindow('success','Document successfully written!');
+        })
+        .catch((error)=>{
+            openModalWindow('error',error);
+        })
+}

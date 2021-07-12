@@ -13,13 +13,18 @@ export async function getVehicleByKeyList(keyList){
     return await getRequestToAPI(query,'vehicle');
 }
 
+export async function getFullVehicleList(){
+    const query = vehiclesRef;
+    return await getRequestToAPI(query,'vehicle');
+}
+
 /**
  * Function for transform doc from API to object with class Vehicle
  * @param doc
  * @return {Vehicle}
  */
 export function castToVehicleClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Vehicle(data);
 }

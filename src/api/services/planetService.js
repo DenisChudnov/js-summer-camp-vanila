@@ -14,6 +14,11 @@ export async function getPlanetsByKeyList(keyList){
     return await getRequestToAPI(query,'planet');
 }
 
+export async function getFullPlanetsList(){
+    const query = planetsRef;
+    return await getRequestToAPI(query, 'planet');
+}
+
 
 /**
  * Function for transform doc from API to object with Planet class;
@@ -21,7 +26,7 @@ export async function getPlanetsByKeyList(keyList){
  * @return {Planet}
  */
 export function castToPlanetClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Planet(data);
 }

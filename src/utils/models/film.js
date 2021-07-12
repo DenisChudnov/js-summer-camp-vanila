@@ -1,6 +1,6 @@
 export class Film {
   constructor(data = {}) {
-    this.pk = data.pk || '';
+    this.pk = data.pk || Math.floor(Math.random() * 9994 + 6);
     this.title = data.title || '';
     this.episode_id = data.episode_id || '';
     this.characters = data.characters || [];
