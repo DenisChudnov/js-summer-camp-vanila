@@ -6,6 +6,7 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * Function for make GET films query to API.
  * Actualy - is query constructor, which create query with parameters.
  * retunr list of films, getted by parameters.
+ * object queryParameters including next fields:
  * @param sortingByField string
  * @param sortingOrder string
  * @param limit int
