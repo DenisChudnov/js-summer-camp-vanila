@@ -6,6 +6,7 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * Function for make GET films query to API.
  * Actualy - is query constructor, which create query with parameters.
  * retunr list of films, getted by parameters.
+ * object queryParameters including next fields:
  * @param sortingByField string
  * @param sortingOrder string
  * @param limit int
@@ -15,41 +16,34 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * @param filterValue string
  * @return {Promise<*[]>}
  */
-export async function getFilmsQueryBuilder(
-    sortingByField = 'pk',
-    sortingOrder = 'asc',
-    limit = 3,
-    direction = 'current',
-    endBeforeValue = '',
-    startAfterValue = '',
-    filterValue = ''
-    ) {
-    if(filterValue!==''){
-        sortingByField = 'title';
-        sortingOrder = 'asc';
+export async function getFilmsQueryBuilder(queryParameters) {
+
+    if(queryParameters.filterValue!=='' && queryParameters.filterValue!==undefined){
+        queryParameters.sortingByField = 'title';
+        queryParameters.sortingOrder = 'asc';
     }
-    sortingByField = changeOrderByFieldNameToValid(sortingByField);
+    queryParameters.sortingByField = changeOrderByFieldNameToValid(queryParameters.sortingByField);
     let query = filmsRef
-        .orderBy(sortingByField, sortingOrder);
+        .orderBy(queryParameters.sortingByField, queryParameters.sortingOrder);
 
-    if(filterValue!==''){
+    if(queryParameters.filterValue!==''){
         query = query
-        .where('fields.title', '>=', filterValue)
-        .where('fields.title','<=',filterValue+'\uf8ff')
+        .where('fields.title', '>=', queryParameters.filterValue)
+        .where('fields.title','<=',queryParameters.filterValue+'\uf8ff')
     }
 
-    if(direction === 'current'){
-        query = query.limit(limit)
+    if(queryParameters.direction === 'current'){
+        query = query.limit(queryParameters.limit)
     }
 
-    if(direction === 'next'){
-        query = query.startAfter(startAfterValue)
-            .limit(limit)
+    if(queryParameters.direction === 'next'){
+        query = query.startAfter(queryParameters.startAfterValue)
+            .limit(queryParameters.limit)
     }
 
-    if (direction === 'prev'){
-        query = query.endBefore(endBeforeValue)
-            .limitToLast(limit)
+    if (queryParameters.direction === 'prev'){
+        query = query.endBefore(queryParameters.endBeforeValue)
+            .limitToLast(queryParameters.limit)
     }
 
     return await getRequestToAPI(query, 'film');
@@ -79,44 +73,6 @@ export function castToFilmClass(dataToCast) {
     const data = dataToCast.fields;
     data.pk = dataToCast.pk;
     return new Film(data);
-}
-
-/**
- * Function for check if next page is existing. Return true or false
- * @param sortingField
- * @param sortingOrder
- * @param limit
- * @param firstValueOnPage
- * @param lastValueOnPage
- * @return {Promise<boolean>}
- */
-export async function isNextPageExist(
-    sortingField = 'pk',
-    sortingOrder = 'asc',
-    limit = 3,
-    firstValueOnPage,
-    lastValueOnPage){
-    const nextPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder,limit,'next', firstValueOnPage,lastValueOnPage);
-    return !nextPageContent || nextPageContent.length == 0 ? false : true;
-}
-
-/**
- * Function for check, if previous page is exist. return true or false
- * @param sortingField
- * @param sortingOrder
- * @param limit
- * @param firstValueOnPage
- * @param lastValueOnPage
- * @return {Promise<boolean>}
- */
-export async function isPreviousPageExist(
-    sortingField = 'pk',
-    sortingOrder = 'asc',
-    limit = 3,
-    firstValueOnPage,
-    lastValueOnPage){
-    const previousPageContent = await getFilmsQueryBuilder(sortingField, sortingOrder, limit, 'prev', firstValueOnPage, lastValueOnPage)
-    return !previousPageContent || previousPageContent.length == 0 ? false : true;
 }
 
 /**

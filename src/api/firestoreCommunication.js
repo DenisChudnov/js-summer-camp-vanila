@@ -5,12 +5,14 @@ import {castToStarshipClass} from './services/starshipService';
 import {castToSpeciesClass} from './services/speciesService';
 import {castToTransportClass} from './services/transportService';
 import {castToVehicleClass} from './services/vehicleService';
+import {openModalWindow} from '../components/modal/modal.js'
 
-import '../components/base';
-import '../components/modal/modal.js';
-import '../components/modal/modal.css';
-
-const dict = {
+/**
+ * Object, which include links to function for cast doc info to entity model class.
+ * For call function of cast need call object field with entity name
+ * @type {{starship: ((function(*): Starship)|*), species: ((function(*): Species)|*), planet: ((function(*): Planet)|*), film: ((function(*): Film)|*), transport: ((function(*): Transport)|*), people: ((function(*): People)|*), vehicle: ((function(*): Vehicle)|*)}}
+ */
+const classesCastCollection = {
     'film':castToFilmClass,
     'people':castToPeopleClass,
     'planet':castToPlanetClass,
@@ -29,20 +31,17 @@ const dict = {
  * @return {Promise<*[]>}
  */
 export async function getRequestToAPI(query, entity){
-    let responseFromAPI = [];
-    await query
+    return await query
         .get()
         .then((snapshot)=>{
-            snapshot.docs.forEach(item=>{
-                if(item){
-                    responseFromAPI.push(castItemDataToEntityClass(item.data(), entity));
-                }
+           return snapshot.docs.map((doc)=>{
+                return castItemDataToEntityClass(doc.data(), entity);
             });
         })
         .catch((error)=>{
-            openModalWindow('There are some error on getting data from API: '+error)
+            openModalWindow('error','There are some error on getting data from API: '+error)
+            return [];
         })
-    return responseFromAPI;
 }
 
 /**
@@ -54,32 +53,6 @@ export async function getRequestToAPI(query, entity){
  * @return {Film|Planet|Starship|Vehicle|Transport|Species|People}
  */
 function castItemDataToEntityClass(doc, entity){
-    const castEntity = dict[entity];
+    const castEntity = classesCastCollection[entity];
     return castEntity(doc);
-}
-
-/**
- * For remove all alert, i made custom modal, which need for parameters.
- * @type {{close(): void, open(): (void|undefined)} & {setContent(*): void, destroy(): void}}
- */
-const msgModal = $.modal({
-    title: 'Error',
-    closable: true,
-    width: '300px',
-    footerButtons: [
-        {text: 'Close', type: 'primary', handler() {
-                msgModal.close();
-            }},
-    ],
-});
-
-/**
- * Function for call custom modal window
- * @param message string - message, which will displayed on modal window.
- */
-function openModalWindow(message){
-    msgModal.setContent(`
-      <p>${message}</p>
-    `);
-    msgModal.open();
 }
