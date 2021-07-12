@@ -3,8 +3,6 @@ import './main.css';
 import '../../components/header/header.js';
 import '../../styles/style.css'
 import {
-  isNextPageExist,
-  isPreviousPageExist,
   getFilmsQueryBuilder
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
@@ -15,6 +13,7 @@ let filmList = [];
 let sortingField = 'pk';
 let sortingOrder = 'asc';
 let filmsCountOnPage = 3;
+let paginationClickCount = 0;
 const defaultSortingField = 'pk';
 const defaultSortingOrder = 'asc';
 const defaultFilmsCountOnPage = 3;
@@ -42,7 +41,8 @@ nextPageButton
 searchInput
     .addEventListener('keyup',async () => {
   let searchingValue = searchInput.value;
-  let result = await getFilmsQueryBuilder(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
+      paginationClickCount = 0;
+  let result = await getFilmListFromAPI(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
   cleanUpTable();
   result.forEach(film=>{
     renderFilmInTable(film);
@@ -85,6 +85,36 @@ document
 
 
 /**
+ * This is function for call service function, which communicate with API;
+ * Get all actual table parameters, return array of objects of film class
+ * @param sortingField
+ * @param sortingOrder
+ * @param limit
+ * @param direction
+ * @param firstValueOnPage
+ * @param lastValueOnPage
+ * @return {Promise<*[]>}
+ */
+async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage,  direction,firstValueOnPage = '', lastValueOnPage = '', searchValue = ''){
+  if(!firstValueOnPage || firstValueOnPage == ''){
+    lastValueOnPage = 0;
+  }
+
+  const queryParameters = {
+    'sortingByField':sortingField,
+    'sortingOrder':sortingOrder,
+    'limit':limit,
+    'direction':direction,
+    'endBeforeValue':firstValueOnPage,
+    'startAfterValue':lastValueOnPage,
+    'filterValue':searchValue
+  }
+
+  let films =  getFilmsQueryBuilder(queryParameters);
+  return films;
+}
+
+/**
  * Function for determinate
  * sorting parameters: field and order;
  * On first click on some column - select column name and order asc;
@@ -105,6 +135,7 @@ function sortingHandler(index){
     sortingField = index;
     sortingOrder = defaultSortingOrder;
   }
+  paginationClickCount = 0;
   renderUI();
 }
 
@@ -114,6 +145,7 @@ function sortingHandler(index){
  */
 function changeFilmsCountOnPage(e){
   e.preventDefault();
+  paginationClickCount = 0;
   filmsCountOnPage = Number(e.target.value);
   renderUI();
 }
@@ -139,48 +171,37 @@ async function renderUI(source = 'current'){
       lastValueOnPage = filmList[filmList.length-1][sortingField];
     }
 
-  filmList = await getFilmListFromAPI(sortingField,sortingOrder,filmsCountOnPage,source,firstValueOnPage,lastValueOnPage);
+    let count = filmsCountOnPage;
+    if(source != 'prev'){
+      count+=1;
+    }
+
+  filmList = await getFilmListFromAPI(sortingField,sortingOrder,count,source,firstValueOnPage,lastValueOnPage);
+  let isNextPageExist = false;
+
+  if((filmList.length > filmsCountOnPage) || source == 'prev'){
+    isNextPageExist = true
+  } else if (filmList.length <= filmsCountOnPage) {
+    isNextPageExist = false;
+  }
+
+  filmList = filmList.slice(0,filmsCountOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
   })
-  if(filmList[0]){
-    firstValueOnPage = filmList[0][sortingField]
-  }
-  if(filmList[filmList.length-1]){
-    lastValueOnPage = filmList[filmList.length-1][sortingField];
-  }
-  let nextPageFilms = await isNextPageExist(sortingField,sortingOrder,filmsCountOnPage, firstValueOnPage, lastValueOnPage);
-  let prevPageFilms = await isPreviousPageExist(sortingField,sortingOrder,filmsCountOnPage, firstValueOnPage, lastValueOnPage);
-  if(!nextPageFilms){
+ if(!isNextPageExist){
     nextPageButton.classList.add('hidden');
-  } else if (nextPageFilms){
+  } else if (isNextPageExist){
     nextPageButton.classList.remove('hidden');
   }
-  if(!prevPageFilms){
+  if(paginationClickCount === 0){
     previousPageButton.classList.add('hidden');
-  } else if (prevPageFilms){
+  } else if (paginationClickCount >0){
     previousPageButton.classList.remove('hidden');
   }
 }
 
-/**
- * This is function for call service function, which communicate with API;
- * Get all actual table parameters, return array of objects of film class
- * @param sortingField
- * @param sortingOrder
- * @param limit
- * @param direction
- * @param firstValueOnPage
- * @param lastValueOnPage
- * @return {Promise<*[]>}
- */
-async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage,  direction,firstValueOnPage = '', lastValueOnPage = ''){
-  if(!firstValueOnPage || firstValueOnPage == ''){
-    lastValueOnPage = 0;
-  }
-  let films =  getFilmsQueryBuilder(sortingField, sortingOrder, limit, direction, firstValueOnPage, lastValueOnPage);
-  return films;
-}
+
 
 /**
  * Funtion for call render page content
@@ -188,6 +209,7 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
  * @return {Promise<void>}
  */
 async function loadNextPage(){
+  paginationClickCount++;
   renderUI('next');
 }
 
@@ -197,6 +219,7 @@ async function loadNextPage(){
  * @return {Promise<void>}
  */
 async function loadPreviousPage(){
+  paginationClickCount --;
   renderUI('prev');
 }
 

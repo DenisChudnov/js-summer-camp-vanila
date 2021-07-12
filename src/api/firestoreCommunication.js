@@ -31,20 +31,17 @@ const classesCastCollection = {
  * @return {Promise<*[]>}
  */
 export async function getRequestToAPI(query, entity){
-    const responseFromAPI = [];
-    await query
+    return await query
         .get()
         .then((snapshot)=>{
-            snapshot.docs.forEach(item=>{
-                if(item){
-                    responseFromAPI.push(castItemDataToEntityClass(item.data(), entity));
-                }
+           return snapshot.docs.map((doc)=>{
+                return castItemDataToEntityClass(doc.data(), entity);
             });
         })
         .catch((error)=>{
             openModalWindow('error','There are some error on getting data from API: '+error)
+            return [];
         })
-    return responseFromAPI;
 }
 
 /**
