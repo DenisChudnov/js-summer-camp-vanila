@@ -1,8 +1,10 @@
 //There are import of some functions, styles and components
 import './main.css';
 import '../../components/header/header.js';
+import '../../components/modal/modal.js'
 import '../../styles/style.css'
 import {
+  deleteCurrentFilm,
   getFilmsQueryBuilder
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
@@ -289,10 +291,20 @@ function renderFilmInTable(film) {
     editButton.innerHTML = `<a href='../management.html?pk=${film.pk}'><button class="btn btn-success">Edit</button></a>`
     cell6.appendChild(editButton);
     const cell7 = row.insertCell(7);
-    let deleteButton = document.createElement("a");
-    deleteButton.innerHTML = `<a><button class="btn btn-danger">Delete</button></a>`
+    let deleteButton = document.createElement('a');
+    deleteButton.addEventListener('click',()=>{
+      customModal.confirm({
+        title:'Delete',
+        content:`Do you really wont to delete ${film.title} film?`
+      })
+          .then(async ()=>{
+            await deleteCurrentFilm(film.pk)
+            renderUI();
+          })
+    })
+    deleteButton.innerHTML = `<button class="btn btn-danger delete-button" id='button-delete-${film.pk}' value=${film.title}>Delete</button>`
     cell7.appendChild(deleteButton);
-  }
+  };
   row.setAttribute('class', 'film-row');
   row.setAttribute('id', `film-${film.pk}`);
 }
@@ -305,3 +317,4 @@ function cleanUpTable(){
     row.remove();
   })
 }
+

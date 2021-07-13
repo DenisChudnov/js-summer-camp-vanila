@@ -1,6 +1,7 @@
 import {Film} from '../../utils/models/film.js';
 import {filmsRef} from '../firebaseSettings';
 import {getRequestToAPI, postRequestToAPI} from '../firestoreCommunication';
+import {openModalWindow} from "../../components/modal/modal";
 
 /**
  * Function for make GET films query to API.
@@ -90,16 +91,16 @@ export async function getCurrentFilm(primaryKey){
 export async function sendFilmDataToServer(filmData){
     const data = transformFilmObjectToFBDoc(filmData);
     let query = filmsRef;
-    if (await getCurrentFilm(data.pk)){
-      let refer = await  filmsRef
-            .where('pk','==',data.pk)
-            .get()
-            .then((snapshot)=>{
-                return snapshot.docs.map((doc)=>{
-                    return doc.id;
-                })
-            });
-        query = query.doc(refer[0]);
+    const existingFilmRefer = await  filmsRef
+        .where('pk','==',data.pk)
+        .get()
+        .then((snapshot)=>{
+            return snapshot.docs.map((doc)=>{
+                return doc.id;
+            })
+        });
+    if(existingFilmRefer.length>0){
+        query = query.doc(existingFilmRefer[0]);
     } else {
         query = query
             .doc();
@@ -115,4 +116,26 @@ function transformFilmObjectToFBDoc(film){
         model:'resources.film',
         fields:film
     }))
+}
+
+export async function deleteCurrentFilm(primaryKey){
+    let query = filmsRef;
+    const Refer = await  filmsRef
+        .where('pk','==',primaryKey)
+        .get()
+        .then((snapshot)=>{
+            return snapshot.docs.map((doc)=>{
+                return doc.id;
+            })
+        });
+
+    await query
+        .doc(Refer[0])
+        .delete()
+        .then(()=>{
+            openModalWindow('success','Film was deleted successfully')
+        })
+        .catch((error)=>{
+            openModalWindow('error',error);
+        })
 }

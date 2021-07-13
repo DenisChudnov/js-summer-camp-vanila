@@ -275,17 +275,54 @@ function getAllCheckedRowsFromSelector(entity){
 }
 
 function isFilmValid(){
+    let errorMessageText = '';
+    if(film.title.length<=0){
+        errorMessageText.concat(`Too short title! \n`)
+    }
+    if(film.title.length>254){
+        errorMessageText.concat(`Too long title! \n`)
+    }
+    if(film.director.length<=0){
+        errorMessageText.concat(`Dont forget about director! \n`)
+    }
+    if(film.director.length>254){
+        errorMessageText.concat(`Too long director name! \n`)
+    }
+    if(film.producer.length<=0){
+        errorMessageText.concat(`Fill producer info, dude! \n`)
+    }
+    if(film.producer.length>254){
+        errorMessageText.concat(`Too long producer name! \n`)
+    }
+    if(isNaN(Number(film.episode_id))){
+        errorMessageText.concat(`Incorrect episode id value. \n`)
+    }
+    if(film.planets.length<=0){
+        errorMessageText.concat(`Add planet to film, please \n`)
+    }
+    if(film.characters.length<=0){
+        errorMessageText.concat(`Add characters to this film, please  \n`)
+    }
+
+    if(errorMessageText === ''){
+        return true
+    } else {
+        openModalWindow('error', errorMessageText);
+        return false
+    }
 
 }
 
 async function createFilm(){
     getFilmDataFromForm();
-    await sendFilmDataToServer(film);
-    console.log('create')
+    if(isFilmValid()){
+        await sendFilmDataToServer(film);
+    }
 }
 
 async function updateFilm(){
     getFilmDataFromForm();
-    await sendFilmDataToServer(film);
-    console.log('update')
+    if(isFilmValid()){
+        await sendFilmDataToServer(film);
+    }
 }

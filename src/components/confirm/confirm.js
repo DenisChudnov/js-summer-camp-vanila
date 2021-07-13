@@ -4,11 +4,11 @@
  * @param options
  * @return {Promise<unknown>}
  */
-$.confirm = function(options) {
+customModal.confirm = function(options) {
   return new Promise((resolve, reject) => {
-    const modal = $.modal({
+    const modal = customModal.modal({
       title: options.title,
-      width: '400px',
+      width: '500px',
       closable: false,
       content: options.content,
       onClose() {
