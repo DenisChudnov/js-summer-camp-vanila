@@ -19,7 +19,7 @@ export async function getPeopleListByPrimaryKeys(pkList){
  * @return {People}
  */
 export function castToPeopleClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new People(data);
 }

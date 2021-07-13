@@ -12,3 +12,5 @@ export class People{
     this.skin_color = data.skin_color;
   }
 }
+
+

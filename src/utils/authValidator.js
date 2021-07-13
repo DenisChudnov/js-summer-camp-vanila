@@ -19,5 +19,5 @@ export function isEmailValid(email){
  * @returns {boolean}
  */
 export function isFieldValueLengthValid(fieldValue){
-    return (fieldValue.length>=5 && fieldValue.length<=80)
+    return (fieldValue.length >= 5 && fieldValue.length <= 80)
 }

@@ -21,7 +21,7 @@ export async function getSpeciesByKeyList(keyList){
  * @return {Species}
  */
 export function castToSpeciesClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Species(data);
 }

@@ -11,8 +11,8 @@ class Accordion extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = `
-        <button class="accordion-button-panel" type="button"></button>
-        <div class="accordion-content-panel">
+        <button class = "accordion-button-panel" type = "button"></button>
+        <div class = "accordion-content-panel">
         </div> 
         `;
   }

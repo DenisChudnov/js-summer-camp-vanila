@@ -19,7 +19,7 @@ export async function getTransportByKeyList(keyList){
  * @return {Transport}
  */
 export function castToTransportClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Transport(data);
 }

@@ -19,7 +19,7 @@ export async function getStarshipsByKeyList(keyList){
  * @return {Starship}
  */
 export function castToStarshipClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Starship(data);
 }

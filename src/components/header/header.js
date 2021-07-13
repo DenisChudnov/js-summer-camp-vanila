@@ -12,18 +12,18 @@ class Header extends HTMLElement {
 
   connectedCallback(){
     this.innerHTML = `   
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="../">
+        <nav class = "navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class = "container-fluid">
+                <a class = "navbar-brand" href="../">
                     <span>LOGO.png :)</span>
                 </a>
-                <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" id="films-table-link">Films</a>
+                <div class = "collapse navbar-collapse" id = "navbarText">
+                    <ul class = "navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class = "nav-item">
+                            <a class = "nav-link" id = "films-table-link">Films</a>
                         </li>
                     </ul>
-                    <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>
+                    <button class = "btn btn-outline-success" type = "button" id = "auth-call-btn"></button>
                 </div>
             </div>
         </nav>
@@ -38,11 +38,11 @@ customElements.get('header-component') || customElements.define('header-componen
 const authButton = document.getElementById('auth-call-btn');
 const linkToFilmsPage = document.getElementById('films-table-link');
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
   setAuthButtonText();
 });
 
-linkToFilmsPage.addEventListener('click', ()=>{
+linkToFilmsPage.addEventListener('click', () => {
   window.open('/', '_self');
 });
 
@@ -51,7 +51,7 @@ linkToFilmsPage.addEventListener('click', ()=>{
  * redirect to login page and
  * logout, if user is already logged in
  */
-authButton.addEventListener('click', ()=>{
+authButton.addEventListener('click', () => {
   if (checkUserInLocalStorage()) {
     logout();
   }

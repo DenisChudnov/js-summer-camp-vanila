@@ -21,7 +21,7 @@ export async function getPlanetsByKeyList(keyList){
  * @return {Planet}
  */
 export function castToPlanetClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Planet(data);
 }

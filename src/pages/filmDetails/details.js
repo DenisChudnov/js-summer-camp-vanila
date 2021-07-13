@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 const charactersAccordionElement = document.getElementsByClassName('accordion-button-panel')[0];
 charactersAccordionElement.innerText = 'CHARACTERS';
 document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
-document.getElementById('characters-panel').innerHTML = '<ul id="characters-list"></ul>';
-charactersAccordionElement.addEventListener('click', ()=>{
+document.getElementById('characters-panel').innerHTML = '<ul id = "characters-list"></ul>';
+charactersAccordionElement.addEventListener('click', () => {
   if (characters.length == 0){
     fillCharactersList();
   }
@@ -68,8 +68,8 @@ charactersAccordionElement.addEventListener('click', ()=>{
 const planetsAccordionElement = document.getElementsByClassName('accordion-button-panel')[1];
 planetsAccordionElement.innerText = 'PLANETS';
 document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
-document.getElementById('planets-panel').innerHTML = '<ul id="planets-list"></ul>';
-planetsAccordionElement.addEventListener('click', ()=>{
+document.getElementById('planets-panel').innerHTML = '<ul id = "planets-list"></ul>';
+planetsAccordionElement.addEventListener('click', () => {
   if (planets.length == 0){
     fillPlanetsList();
   }
@@ -82,8 +82,8 @@ planetsAccordionElement.addEventListener('click', ()=>{
 const speciesAccordionElement = document.getElementsByClassName('accordion-button-panel')[2];
 speciesAccordionElement.innerText = 'SPECIES';
 document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
-document.getElementById('species-panel').innerHTML = '<ul id="species-list"></ul>';
-speciesAccordionElement.addEventListener('click', ()=>{
+document.getElementById('species-panel').innerHTML = '<ul id = "species-list"></ul>';
+speciesAccordionElement.addEventListener('click', () => {
   if (species.length == 0){
     fillSpeciesList();
   }
@@ -96,8 +96,8 @@ speciesAccordionElement.addEventListener('click', ()=>{
 const starshipsAccordionElement = document.getElementsByClassName('accordion-button-panel')[3];
 starshipsAccordionElement.innerText = 'STARSHIPS';
 document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starship-panel');
-document.getElementById('starship-panel').innerHTML = '<ul id="starships-list"></ul>';
-starshipsAccordionElement.addEventListener('click', ()=>{
+document.getElementById('starship-panel').innerHTML = '<ul id = "starships-list"></ul>';
+starshipsAccordionElement.addEventListener('click', () => {
   if (starships.length == 0){
     fillStarshipsList();
   }
@@ -110,8 +110,8 @@ starshipsAccordionElement.addEventListener('click', ()=>{
 const vehiclesAccordionElement = document.getElementsByClassName('accordion-button-panel')[4];
 vehiclesAccordionElement.innerText = 'VEHICLES';
 document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
-document.getElementById('vehicles-panel').innerHTML = '<ul id="vehicles-list"></ul>';
-vehiclesAccordionElement.addEventListener('click', ()=>{
+document.getElementById('vehicles-panel').innerHTML = '<ul id = "vehicles-list"></ul>';
+vehiclesAccordionElement.addEventListener('click', () => {
   if (vehicles.length == 0){
     fillVehiclesList();
   }
@@ -153,14 +153,14 @@ async function fillCharactersList(){
   //So, i just separate my keys array for pieces with 10 values;
   //And get all data, that i need without data, which i don't need;
   //optimization, bitch!(c) *Jesse_Pinkman.PNG*
-  for(let i = 0; i<=countOfFilmCharacters;i+=10){
-    let listForQuery = film.characters.slice(i,i+10);
-    if(listForQuery!=[] && listForQuery.length>0){
+  for(let i = 0; i <= countOfFilmCharacters; i += 10){
+    let listForQuery = film.characters.slice(i, i + 10);
+    if(listForQuery != [] && listForQuery.length > 0){
       const result = await getPeopleListByPrimaryKeys(listForQuery);
       characters = characters.concat(result);
     }
   }
-  characters.forEach(character=>{
+  characters.forEach(character => {
     const newLi = document.createElement('li');
     newLi.innerText = character.name;
     document.getElementById('characters-list').appendChild(newLi);
@@ -169,14 +169,14 @@ async function fillCharactersList(){
 
 async function fillPlanetsList(){
   const countOfFilmPlanets = film.planets.length;
-  for(let i = 0; i<=countOfFilmPlanets;i+=10){
-    let listForQuery = film.planets.slice(i,i+10);
-    if(listForQuery!=[] && listForQuery.length>0){
+  for(let i = 0; i <= countOfFilmPlanets; i += 10){
+    let listForQuery = film.planets.slice(i, i + 10);
+    if(listForQuery != [] && listForQuery.length > 0){
       const result = await getPlanetsByKeyList(listForQuery);
       planets = planets.concat(result);
     }
   }
-  planets.forEach(planet=>{
+  planets.forEach(planet => {
     const newLi = document.createElement('li');
     newLi.innerText = planet.name;
     document.getElementById('planets-list').appendChild(newLi);
@@ -185,14 +185,14 @@ async function fillPlanetsList(){
 
 async function fillSpeciesList(){
   const countOfFilmSpecies = film.species.length;
-  for(let i = 0; i<=countOfFilmSpecies;i+=10){
-    let listForQuery = film.species.slice(i,i+10);
-    if(listForQuery!=[] && listForQuery.length>0){
+  for(let i = 0; i <= countOfFilmSpecies; i += 10){
+    let listForQuery = film.species.slice(i, i + 10);
+    if(listForQuery != [] && listForQuery.length>0){
       const result = await getSpeciesByKeyList(listForQuery);
       species = species.concat(result);
     }
   }
-  species.forEach(spec=>{
+  species.forEach(spec => {
     const newLi = document.createElement('li');
     newLi.innerText = spec.name;
     document.getElementById('species-list').appendChild(newLi);
@@ -201,30 +201,30 @@ async function fillSpeciesList(){
 
 async function fillStarshipsList(){
   const countOfFilmStarships = film.starships.length;
-  for(let i = 0; i<=countOfFilmStarships;i+=10){
-    let listForQuery = film.starships.slice(i,i+10);
-    if(listForQuery!=[] && listForQuery.length>0){
+  for(let i = 0; i <= countOfFilmStarships; i += 10){
+    let listForQuery = film.starships.slice(i, i + 10);
+    if(listForQuery != [] && listForQuery.length > 0){
       const result = await getStarshipsByKeyList(listForQuery);
       starships = starships.concat(result);
     }
   }
-  starships.forEach(spec=>{
+  starships.forEach(spec => {
     const newLi = document.createElement('li');
-    newLi.innerText = spec.MGLT;
+    newLi.innerText = spec.starship_class;
     document.getElementById('starships-list').appendChild(newLi);
   })
 }
 
 async function fillVehiclesList(){
   const countOfFilmVehicles = film.vehicles.length;
-  for(let i = 0; i<=countOfFilmVehicles;i+=10){
-    let listForQuery = film.vehicles.slice(i,i+10);
-    if(listForQuery!=[] && listForQuery.length>0){
+  for(let i = 0; i <= countOfFilmVehicles; i += 10){
+    let listForQuery = film.vehicles.slice(i, i + 10);
+    if(listForQuery != [] && listForQuery.length > 0){
       const result = await getVehicleByKeyList(listForQuery);
       vehicles = vehicles.concat(result);
     }
   }
-  vehicles.forEach(spec=>{
+  vehicles.forEach(spec => {
     const newLi = document.createElement('li');
     newLi.innerText = spec.vehicle_class;
     document.getElementById('vehicles-list').appendChild(newLi);

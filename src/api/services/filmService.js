@@ -18,7 +18,7 @@ import {getRequestToAPI} from '../firestoreCommunication';
  */
 export async function getFilmsQueryBuilder(queryParameters) {
 
-    if(queryParameters.filterValue!=='' && queryParameters.filterValue!==undefined){
+    if(queryParameters.filterValue !== '' && queryParameters.filterValue !== undefined){
         queryParameters.sortingByField = 'title';
         queryParameters.sortingOrder = 'asc';
     }
@@ -26,7 +26,7 @@ export async function getFilmsQueryBuilder(queryParameters) {
     let query = filmsRef
         .orderBy(queryParameters.sortingByField, queryParameters.sortingOrder);
 
-    if(queryParameters.filterValue!==''){
+    if(queryParameters.filterValue !== ''){
         query = query
         .where('fields.title', '>=', queryParameters.filterValue)
         .where('fields.title','<=',queryParameters.filterValue+'\uf8ff')

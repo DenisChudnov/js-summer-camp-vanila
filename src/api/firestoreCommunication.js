@@ -13,13 +13,13 @@ import {openModalWindow} from '../components/modal/modal.js'
  * @type {{starship: ((function(*): Starship)|*), species: ((function(*): Species)|*), planet: ((function(*): Planet)|*), film: ((function(*): Film)|*), transport: ((function(*): Transport)|*), people: ((function(*): People)|*), vehicle: ((function(*): Vehicle)|*)}}
  */
 const classesCastCollection = {
-    'film':castToFilmClass,
-    'people':castToPeopleClass,
-    'planet':castToPlanetClass,
-    'species':castToSpeciesClass,
-    'starship':castToStarshipClass,
-    'transport':castToTransportClass,
-    'vehicle':castToVehicleClass,
+    film:castToFilmClass,
+    people:castToPeopleClass,
+    planet:castToPlanetClass,
+    species:castToSpeciesClass,
+    starship:castToStarshipClass,
+    transport:castToTransportClass,
+    vehicle:castToVehicleClass,
 }
 
 /**
@@ -33,13 +33,13 @@ const classesCastCollection = {
 export async function getRequestToAPI(query, entity){
     return await query
         .get()
-        .then((snapshot)=>{
-           return snapshot.docs.map((doc)=>{
+        .then((snapshot) => {
+           return snapshot.docs.map((doc) => {
                 return castItemDataToEntityClass(doc.data(), entity);
             });
         })
-        .catch((error)=>{
-            openModalWindow('error','There are some error on getting data from API: '+error)
+        .catch((error) => {
+            openModalWindow('error','There are some error on getting data from API: ' + error)
             return [];
         })
 }

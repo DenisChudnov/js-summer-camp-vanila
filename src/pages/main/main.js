@@ -44,7 +44,7 @@ searchInput
       paginationClickCount = 0;
   let result = await getFilmListFromAPI(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
   cleanUpTable();
-  result.forEach(film=>{
+  result.forEach(film => {
     renderFilmInTable(film);
   })
 })
@@ -77,8 +77,8 @@ document
  */
 document
     .querySelectorAll('.films-table-header')
-    .forEach((headerCell, index)=>{
-      headerCell.addEventListener('click', ()=>{
+    .forEach((headerCell, index) => {
+      headerCell.addEventListener('click', () => {
         sortingHandler(transformation(index));
       })
     })
@@ -101,13 +101,13 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
   }
 
   const queryParameters = {
-    'sortingByField':sortingField,
-    'sortingOrder':sortingOrder,
-    'limit':limit,
-    'direction':direction,
-    'endBeforeValue':firstValueOnPage,
-    'startAfterValue':lastValueOnPage,
-    'filterValue':searchValue
+    sortingByField:sortingField,
+    sortingOrder:sortingOrder,
+    limit:limit,
+    direction:direction,
+    endBeforeValue:firstValueOnPage,
+    startAfterValue:lastValueOnPage,
+    filterValue:searchValue
   }
 
   let films =  getFilmsQueryBuilder(queryParameters);
@@ -167,13 +167,13 @@ async function renderUI(source = 'current'){
     if(filmList[0]){
       firstValueOnPage = filmList[0][sortingField]
     }
-    if(filmList[filmList.length-1]){
-      lastValueOnPage = filmList[filmList.length-1][sortingField];
+    if(filmList[filmList.length - 1]){
+      lastValueOnPage = filmList[filmList.length - 1][sortingField];
     }
 
     let count = filmsCountOnPage;
     if(source != 'prev'){
-      count+=1;
+      count += 1;
     }
 
   filmList = await getFilmListFromAPI(sortingField,sortingOrder,count,source,firstValueOnPage,lastValueOnPage);
@@ -185,7 +185,7 @@ async function renderUI(source = 'current'){
     isNextPageExist = false;
   }
 
-  filmList = filmList.slice(0,filmsCountOnPage);
+  filmList = filmList.slice(0, filmsCountOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
   })
@@ -196,7 +196,7 @@ async function renderUI(source = 'current'){
   }
   if(paginationClickCount === 0){
     previousPageButton.classList.add('hidden');
-  } else if (paginationClickCount >0){
+  } else if (paginationClickCount > 0){
     previousPageButton.classList.remove('hidden');
   }
 }
@@ -209,7 +209,7 @@ async function renderUI(source = 'current'){
  * @return {Promise<void>}
  */
 async function loadNextPage(){
-  paginationClickCount++;
+  paginationClickCount ++;
   renderUI('next');
 }
 
@@ -243,7 +243,7 @@ function renderFilmInTable(film) {
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
     let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-light'>Details</button></a>`
+    detailsButton.innerHTML = `<a href = '../details.html?pk=${film.pk}'><button class = 'btn btn-light'>Details</button></a>`
     cell5.appendChild(detailsButton);
   }
   row.setAttribute('class', 'film-row');

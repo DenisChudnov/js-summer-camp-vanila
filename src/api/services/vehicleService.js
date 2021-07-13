@@ -19,7 +19,7 @@ export async function getVehicleByKeyList(keyList){
  * @return {Vehicle}
  */
 export function castToVehicleClass(doc){
-    let data = doc.fields;
+    const data = doc.fields;
     data.pk = doc.pk;
     return new Vehicle(data);
 }
