@@ -88,7 +88,14 @@ export async function getCurrentFilm(primaryKey){
     return result[0];
 }
 
-
+/**
+ * function for send film's data to server.
+ * If film with same primary key is already exist -
+ * there are build update query.
+ * If is brand new film - build create query
+ * @param filmData
+ * @return {Promise<void>}
+ */
 export async function sendFilmDataToServer(filmData){
     const data = transformFilmObjectToFBDoc(filmData);
     let query = filmsRef;
@@ -109,6 +116,11 @@ export async function sendFilmDataToServer(filmData){
     await postRequestToAPI(query, data);
 }
 
+/**
+ * Simple function just for transform film data to fb format
+ * @param film
+ * @return {any}
+ */
 function transformFilmObjectToFBDoc(film){
     const pk = film.pk;
     delete film.pk;
@@ -119,6 +131,11 @@ function transformFilmObjectToFBDoc(film){
     }))
 }
 
+/**
+ * Function with delete film by primary key request
+ * @param primaryKey
+ * @return {Promise<void>}
+ */
 export async function deleteCurrentFilm(primaryKey){
     let query = filmsRef;
     const Refer = await  filmsRef

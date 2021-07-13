@@ -57,6 +57,14 @@ function castItemDataToEntityClass(doc, entity){
     return castEntity(doc);
 }
 
+/**
+ * This function realise post request to API
+ * for realise create and update functionallity.
+ * Get query and value for post
+ * @param query
+ * @param value
+ * @return {Promise<*>}
+ */
 export async function postRequestToAPI(query, value){
     return await query
         .set(value)
