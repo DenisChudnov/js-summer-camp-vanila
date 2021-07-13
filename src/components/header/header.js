@@ -18,9 +18,9 @@ class Header extends HTMLElement {
                     <span>LOGO.png :)</span>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarText">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="links-list">
                         <li class="nav-item">
-                            <a class="nav-link" id="films-table-link">Films</a>
+                            <a class="nav-link" id="films-table-link" href="../">Films</a>
                         </li>
                     </ul>
                     <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>
@@ -36,14 +36,17 @@ class Header extends HTMLElement {
 customElements.get('header-component') || customElements.define('header-component', Header);
 
 const authButton = document.getElementById('auth-call-btn');
-const linkToFilmsPage = document.getElementById('films-table-link');
+
 
 document.addEventListener('DOMContentLoaded', ()=>{
   setAuthButtonText();
-});
-
-linkToFilmsPage.addEventListener('click', ()=>{
-  window.open('/', '_self');
+  if (checkUserInLocalStorage()){
+    document.getElementById('links-list').innerHTML += `
+     <li class="nav-item" id="new-film-create-item">
+        <a class="nav-link" id="new-film-create-link" href="../management.html">Create new film</a>
+     </li>
+    `;
+  }
 });
 
 /**

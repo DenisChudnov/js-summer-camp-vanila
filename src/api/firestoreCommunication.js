@@ -62,6 +62,7 @@ export async function postRequestToAPI(query, value){
         .set(value)
         .then(()=>{
             openModalWindow('success','Document successfully written!');
+            window.open('../','_self');
         })
         .catch((error)=>{
             openModalWindow('error',error);

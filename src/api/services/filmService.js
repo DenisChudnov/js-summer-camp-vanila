@@ -88,6 +88,7 @@ export async function getCurrentFilm(primaryKey){
     return result[0];
 }
 
+
 export async function sendFilmDataToServer(filmData){
     const data = transformFilmObjectToFBDoc(filmData);
     let query = filmsRef;
