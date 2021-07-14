@@ -1,21 +1,20 @@
 import {auth} from '../firebaseSettings.js';
 import {addUserToLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
 import {setAuthButtonText} from '../../components/header/header';
-import {openModalWindow} from "../../components/modal/modal";
 
 /**
  * Function for registration with cred in params;
  * @param email string
  * @param password string
  */
-export function createNewUser(email, password) {
+export function createNewUser(email, password, callback) {
   auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
-        openModalWindow('success','New user was registered');
+        callback('success','New user was registered')
         return userCredential;
     })
     .catch((error) => {
-      openModalWindow('error',`Something went wrong, server return error ${error}`);
+      callback('error',`Something went wrong, server return error ${error}`);
       return error;
     });
 }
@@ -26,16 +25,16 @@ export function createNewUser(email, password) {
  * @param password string
  * @param _callback function
  */
-export async function login(email, password) {
+export async function login(email, password, callback) {
   auth.signInWithEmailAndPassword(email, password)
     .then(async (userCredenial) => {
       await addUserToLocalStorage(auth.currentUser);
       setAuthButtonText();
+        callback('welcome','welcome to swapp!')
         window.open('./', '_self');
-        openModalWindow('welcome','welcome to swapp!')
     })
     .catch((error) => {
-        openModalWindow('error', `something went wrong... ${error}`);
+        callback('error', `something went wrong... ${error}`);
     });
 }
 

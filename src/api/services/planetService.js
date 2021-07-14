@@ -1,4 +1,4 @@
-import {Planet} from '../../utils/models/planet';
+import '../../utils/models/planet';
 import {planetsRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
@@ -8,10 +8,12 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * @param keyList
  * @return {Promise<*[]>}
  */
-export async function getPlanetsByKeyList(keyList){
+export async function getPlanetsByKeyList(keyList, callback){
     const query = planetsRef
         .where('pk','in',keyList);
-    return await getRequestToAPI(query,'planet');
+    return await getRequestToAPI(query,'planet', function(type, message){
+        callback(type, message)
+    });
 }
 
 
@@ -20,8 +22,8 @@ export async function getPlanetsByKeyList(keyList){
  * @param doc
  * @return {Planet}
  */
-export function castToPlanetClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new Planet(data);
+export function castToPlanetClass(doc, Planet){
+    Planet = doc.fields;
+    Planet.pk = doc.pk;
+    return Planet;
 }

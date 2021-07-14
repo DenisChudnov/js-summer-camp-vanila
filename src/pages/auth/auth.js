@@ -21,14 +21,16 @@ document
 
 document
   .getElementById('sign-up-button')
-  .addEventListener('click', () => {
+  .addEventListener('click', async () => {
     const signUpForm = document.getElementById('sign-up-form');
     const email = signUpForm.registrationEmail.value;
     const password = signUpForm.registrationPassword.value;
     const fieldsLengthIsValid = (isFieldValueLengthValid(email) && isFieldValueLengthValid(password));
     if (fieldsLengthIsValid){
       if (isEmailValid(email)) {
-        createNewUser(email, password);
+          createNewUser(email, password, function (type, message){
+              openModalWindow(type, message)
+          });
       } else {
         openModalWindow('error', 'Invalid email');
       }
@@ -43,6 +45,8 @@ document
     const signInForm = document.getElementById('sign-in-form');
     const email = signInForm.loginEmail.value;
     const password = signInForm.loginPassword.value;
-    login(email, password);
+    login(email, password, function (type, message){
+        openModalWindow(type, message);
+    });
   });
 

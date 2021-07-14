@@ -7,6 +7,7 @@ import {
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
+import {openModalWindow} from "../../components/modal/modal";
 
 //There are variables for table managment
 let filmList = [];
@@ -110,7 +111,9 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
     filterValue:searchValue
   }
 
-  let films =  getFilmsQueryBuilder(queryParameters);
+  let films =  getFilmsQueryBuilder(queryParameters, function (type, message){
+    openModalWindow(type, message);
+  });
   return films;
 }
 

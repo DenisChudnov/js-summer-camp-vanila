@@ -6,7 +6,7 @@
  */
 export function isEmailValid(email){
     let mailValidFormat = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if(email.match(mailValidFormat)){
+    if (email.match(mailValidFormat)){
         return true
     }
     return false

@@ -55,9 +55,9 @@ const charactersAccordionElement = document.getElementsByClassName('accordion-bu
 charactersAccordionElement.innerText = 'CHARACTERS';
 document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
 document.getElementById('characters-panel').innerHTML = '<ul id = "characters-list"></ul>';
-charactersAccordionElement.addEventListener('click', () => {
+charactersAccordionElement.addEventListener('click', async () => {
   if (characters.length == 0){
-    fillCharactersList();
+    await fillCharactersList();
   }
 });
 
@@ -124,7 +124,9 @@ vehiclesAccordionElement.addEventListener('click', () => {
  * @return {Promise<*>}
  */
 export async function getCurrentFilmData(key){
-  return  await getCurrentFilm(key);
+  return await getCurrentFilm(key, function(type, message){
+    openModalWindow(type, message)
+  });
 }
 
 /**
@@ -155,8 +157,10 @@ async function fillCharactersList(){
   //optimization, bitch!(c) *Jesse_Pinkman.PNG*
   for(let i = 0; i <= countOfFilmCharacters; i += 10){
     let listForQuery = film.characters.slice(i, i + 10);
-    if(listForQuery != [] && listForQuery.length > 0){
-      const result = await getPeopleListByPrimaryKeys(listForQuery);
+     if (listForQuery != [] && listForQuery.length > 0){
+      const result = await getPeopleListByPrimaryKeys(listForQuery, function(type, message){
+        openModalWindow(type, message)
+      });
       characters = characters.concat(result);
     }
   }
@@ -165,14 +169,17 @@ async function fillCharactersList(){
     newLi.innerText = character.name;
     document.getElementById('characters-list').appendChild(newLi);
   })
+  charactersAccordionElement.nextElementSibling.style.maxHeight = 24*characters.length + 'px';
 }
 
 async function fillPlanetsList(){
   const countOfFilmPlanets = film.planets.length;
   for(let i = 0; i <= countOfFilmPlanets; i += 10){
     let listForQuery = film.planets.slice(i, i + 10);
-    if(listForQuery != [] && listForQuery.length > 0){
-      const result = await getPlanetsByKeyList(listForQuery);
+     if (listForQuery != [] && listForQuery.length > 0){
+      const result = await getPlanetsByKeyList(listForQuery, function(type, message){
+        openModalWindow(type, message)
+      });
       planets = planets.concat(result);
     }
   }
@@ -181,14 +188,18 @@ async function fillPlanetsList(){
     newLi.innerText = planet.name;
     document.getElementById('planets-list').appendChild(newLi);
   })
+  planetsAccordionElement.nextElementSibling.style.maxHeight = 24*planets.length + 'px';
+
 }
 
 async function fillSpeciesList(){
   const countOfFilmSpecies = film.species.length;
   for(let i = 0; i <= countOfFilmSpecies; i += 10){
     let listForQuery = film.species.slice(i, i + 10);
-    if(listForQuery != [] && listForQuery.length>0){
-      const result = await getSpeciesByKeyList(listForQuery);
+     if (listForQuery != [] && listForQuery.length>0){
+      const result = await getSpeciesByKeyList(listForQuery, function(type, message){
+        openModalWindow(type, message)
+      });
       species = species.concat(result);
     }
   }
@@ -197,14 +208,18 @@ async function fillSpeciesList(){
     newLi.innerText = spec.name;
     document.getElementById('species-list').appendChild(newLi);
   })
+  speciesAccordionElement.nextElementSibling.style.maxHeight = 24*species.length + 'px';
+
 }
 
 async function fillStarshipsList(){
   const countOfFilmStarships = film.starships.length;
   for(let i = 0; i <= countOfFilmStarships; i += 10){
     let listForQuery = film.starships.slice(i, i + 10);
-    if(listForQuery != [] && listForQuery.length > 0){
-      const result = await getStarshipsByKeyList(listForQuery);
+     if (listForQuery != [] && listForQuery.length > 0){
+      const result = await getStarshipsByKeyList(listForQuery, function(type, message){
+        openModalWindow(type, message)
+      });
       starships = starships.concat(result);
     }
   }
@@ -213,14 +228,18 @@ async function fillStarshipsList(){
     newLi.innerText = spec.starship_class;
     document.getElementById('starships-list').appendChild(newLi);
   })
+  starshipsAccordionElement.nextElementSibling.style.maxHeight = 24*starships.length + 'px';
+
 }
 
 async function fillVehiclesList(){
   const countOfFilmVehicles = film.vehicles.length;
   for(let i = 0; i <= countOfFilmVehicles; i += 10){
     let listForQuery = film.vehicles.slice(i, i + 10);
-    if(listForQuery != [] && listForQuery.length > 0){
-      const result = await getVehicleByKeyList(listForQuery);
+     if (listForQuery != [] && listForQuery.length > 0){
+      const result = await getVehicleByKeyList(listForQuery, function(type, message){
+        openModalWindow(type, message)
+      });
       vehicles = vehicles.concat(result);
     }
   }
@@ -229,4 +248,6 @@ async function fillVehiclesList(){
     newLi.innerText = spec.vehicle_class;
     document.getElementById('vehicles-list').appendChild(newLi);
   })
+  vehiclesAccordionElement.nextElementSibling.style.maxHeight = 24*vehicles.length + 'px';
+
 }

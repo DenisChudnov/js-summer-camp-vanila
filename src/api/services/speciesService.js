@@ -1,4 +1,4 @@
-import {Species} from '../../utils/models/species';
+import '../../utils/models/species';
 import {speciesRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
@@ -8,10 +8,12 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * @param keyList
  * @return {Promise<*[]>}
  */
-export async function getSpeciesByKeyList(keyList){
+export async function getSpeciesByKeyList(keyList, callback){
     let query = speciesRef
         .where('pk','in',keyList);
-    return await getRequestToAPI(query,'species');
+    return await getRequestToAPI(query,'species', function(type, message){
+        callback(type, message)
+    });
 }
 
 
@@ -20,8 +22,8 @@ export async function getSpeciesByKeyList(keyList){
  * @param doc
  * @return {Species}
  */
-export function castToSpeciesClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new Species(data);
+export function castToSpeciesClass(doc, Species){
+    Species = doc.fields;
+    Species.pk = doc.pk;
+    return Species;
 }
