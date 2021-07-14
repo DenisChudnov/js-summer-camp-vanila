@@ -1,14 +1,13 @@
-export class Transport{
-  constructor(data) {
-    this.pk = data.pk;
-    this.cargo_capacity = data.cargo_capacity;
-    this.consumables = data.consumables;
-    this.crew = data.crew;
-    this.length = data.length;
-    this.manufacturer = data.manufacturer;
-    this.max_atmosphering_speed = data.max_atmosphering_speed;
-    this.model = data.model;
-    this.name = data.name;
-    this.passengers = data.passengers;
-  }
-}
+/**
+ * @typedef {Object} Transport
+ * @property {number} pk
+ * @property {string} cargo_capacity
+ * @property {string} consumables
+ * @property {string} crew
+ * @property {string} length
+ * @property {string} manufacturer
+ * @property {string} max_atmosphering_speed
+ * @property {string} model
+ * @property {string} name
+ * @property {string} passengers
+ */

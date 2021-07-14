@@ -9,6 +9,7 @@ import {
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
+import {openModalWindow} from "../../components/modal/modal";
 
 //There are variables for table managment
 let filmList = [];
@@ -47,7 +48,7 @@ searchInput
       paginationClickCount = 0;
   let result = await getFilmListFromAPI(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
   cleanUpTable();
-  result.forEach(film=>{
+  result.forEach(film => {
     renderFilmInTable(film);
   })
 })
@@ -110,8 +111,8 @@ document
  */
 document
     .querySelectorAll('.films-table-header')
-    .forEach((headerCell, index)=>{
-      headerCell.addEventListener('click', ()=>{
+    .forEach((headerCell, index) => {
+      headerCell.addEventListener('click', () => {
         sortingHandler(transformation(index));
       })
     })
@@ -134,16 +135,18 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
   }
 
   const queryParameters = {
-    'sortingByField':sortingField,
-    'sortingOrder':sortingOrder,
-    'limit':limit,
-    'direction':direction,
-    'endBeforeValue':firstValueOnPage,
-    'startAfterValue':lastValueOnPage,
-    'filterValue':searchValue
+    sortingByField:sortingField,
+    sortingOrder:sortingOrder,
+    limit:limit,
+    direction:direction,
+    endBeforeValue:firstValueOnPage,
+    startAfterValue:lastValueOnPage,
+    filterValue:searchValue
   }
 
-  let films =  getFilmsQueryBuilder(queryParameters);
+  let films =  getFilmsQueryBuilder(queryParameters, function (type, message){
+    openModalWindow(type, message);
+  });
   return films;
 }
 
@@ -200,13 +203,13 @@ async function renderUI(source = 'current'){
     if(filmList[0]){
       firstValueOnPage = filmList[0][sortingField]
     }
-    if(filmList[filmList.length-1]){
-      lastValueOnPage = filmList[filmList.length-1][sortingField];
+    if(filmList[filmList.length - 1]){
+      lastValueOnPage = filmList[filmList.length - 1][sortingField];
     }
 
     let count = filmsCountOnPage;
     if(source != 'prev'){
-      count+=1;
+      count += 1;
     }
 
   filmList = await getFilmListFromAPI(sortingField,sortingOrder,count,source,firstValueOnPage,lastValueOnPage);
@@ -218,7 +221,7 @@ async function renderUI(source = 'current'){
     isNextPageExist = false;
   }
 
-  filmList = filmList.slice(0,filmsCountOnPage);
+  filmList = filmList.slice(0, filmsCountOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
   })
@@ -229,7 +232,7 @@ async function renderUI(source = 'current'){
   }
   if(paginationClickCount === 0){
     previousPageButton.classList.add('hidden');
-  } else if (paginationClickCount >0){
+  } else if (paginationClickCount > 0){
     previousPageButton.classList.remove('hidden');
   }
 }
@@ -242,7 +245,7 @@ async function renderUI(source = 'current'){
  * @return {Promise<void>}
  */
 async function loadNextPage(){
-  paginationClickCount++;
+  paginationClickCount ++;
   renderUI('next');
 }
 
@@ -276,25 +279,25 @@ function renderFilmInTable(film) {
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
     let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-info'>Details</button></a>`
+    detailsButton.innerHTML = `<a href = '../details.html?pk=${film.pk}'><button class = 'btn btn-light'>Details</button></a>`
     cell5.appendChild(detailsButton);
     const cell6 = row.insertCell(6);
     let editButton = document.createElement("a");
-    editButton.innerHTML = `<a href='../management.html?pk=${film.pk}'><button class="btn btn-success">Edit</button></a>`
+    editButton.innerHTML = `<a href  = '../management.html?pk=${film.pk}'><button class = 'btn btn-success'>Edit</button></a>`
     cell6.appendChild(editButton);
     const cell7 = row.insertCell(7);
     let deleteButton = document.createElement('a');
-    deleteButton.addEventListener('click',()=>{
+    deleteButton.addEventListener('click',() => {
       customModal.confirm({
-        title:'Delete',
-        content:`Do you really wont to delete ${film.title} film?`
+        title: 'Delete',
+        content: `Do you really wont to delete ${film.title} film?`
       })
-          .then(async ()=>{
+          .then(async () => {
             await deleteCurrentFilm(film.pk)
             renderUI();
           })
     })
-    deleteButton.innerHTML = `<button class="btn btn-danger delete-button" id='button-delete-${film.pk}' value=${film.title}>Delete</button>`
+    deleteButton.innerHTML = `<button class = 'btn btn-danger delete-button' id = 'button-delete-${film.pk}' value = ${film.title}>Delete</button>`
     cell7.appendChild(deleteButton);
   };
   row.setAttribute('class', 'film-row');

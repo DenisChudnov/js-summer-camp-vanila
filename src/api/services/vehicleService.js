@@ -1,4 +1,4 @@
-import {Vehicle} from '../../utils/models/vehicle';
+import '../../utils/models/vehicle';
 import {vehiclesRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
@@ -7,10 +7,12 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * @param keyList
  * @return {Promise<*[]>}
  */
-export async function getVehicleByKeyList(keyList){
+export async function getVehicleByKeyList(keyList, callback){
     const query = vehiclesRef
         .where('pk','in',keyList);
-    return await getRequestToAPI(query,'vehicle');
+    return await getRequestToAPI(query,'vehicle', function(type, message){
+        callback(type, message)
+    });
 }
 
 export async function getFullVehicleList(){
@@ -23,8 +25,8 @@ export async function getFullVehicleList(){
  * @param doc
  * @return {Vehicle}
  */
-export function castToVehicleClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new Vehicle(data);
+export function castToVehicleClass(doc, Vehicle){
+    Vehicle = doc.fields;
+    Vehicle.pk = doc.pk;
+    return Vehicle;
 }

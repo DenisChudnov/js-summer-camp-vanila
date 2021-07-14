@@ -1,7 +1,6 @@
-export class Vehicle{
-  constructor(data) {
-    this.pk = data.pk;
-    this.vehicle_class = data.vehicle_class;
-    this.pilots = (data.pilots || []);
-  }
-}
+/**
+ * @typedef {Object} Vehicle
+ * @property {number} pk
+ * @property {string} vehicle_class
+ * @property {array} pilots
+ */

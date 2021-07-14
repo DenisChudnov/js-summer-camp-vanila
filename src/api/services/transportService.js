@@ -1,4 +1,4 @@
-import {Transport} from '../../utils/models/transport';
+import '../../utils/models/transport';
 import {transportRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
@@ -7,10 +7,12 @@ import {getRequestToAPI} from '../firestoreCommunication';
  * @param keyList
  * @return {Promise<*[]>}
  */
-export async function getTransportByKeyList(keyList){
+export async function getTransportByKeyList(keyList, callback){
     const query = transportRef
         .where('pk','in',keyList);
-    return await getRequestToAPI(query,'transport');
+    return await getRequestToAPI(query,'transport', function(type, message){
+        callback(type, message)
+    });
 }
 
 export async function getFullTransportList(){
@@ -23,8 +25,8 @@ export async function getFullTransportList(){
  * @param doc
  * @return {Transport}
  */
-export function castToTransportClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new Transport(data);
+export function castToTransportClass(doc, Transport){
+    Transport = doc.fields;
+    Transport.pk = doc.pk;
+    return Transport;
 }

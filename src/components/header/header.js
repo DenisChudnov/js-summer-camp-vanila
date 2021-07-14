@@ -12,9 +12,9 @@ class Header extends HTMLElement {
 
   connectedCallback(){
     this.innerHTML = `   
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="../">
+        <nav class = "navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class = "container-fluid">
+                <a class = "navbar-brand" href="../">
                     <span>LOGO.png :)</span>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarText">
@@ -23,7 +23,7 @@ class Header extends HTMLElement {
                             <a class="nav-link" id="films-table-link" href="../">Films</a>
                         </li>
                     </ul>
-                    <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>
+                    <button class = "btn btn-outline-success" type = "button" id = "auth-call-btn"></button>
                 </div>
             </div>
         </nav>
@@ -37,8 +37,7 @@ customElements.get('header-component') || customElements.define('header-componen
 
 const authButton = document.getElementById('auth-call-btn');
 
-
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
   setAuthButtonText();
   if (checkUserInLocalStorage()){
     document.getElementById('links-list').innerHTML += `
@@ -49,12 +48,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 });
 
+
 /**
  * Handler of click on auth-button
  * redirect to login page and
  * logout, if user is already logged in
  */
-authButton.addEventListener('click', ()=>{
+authButton.addEventListener('click', () => {
   if (checkUserInLocalStorage()) {
     logout();
   }
