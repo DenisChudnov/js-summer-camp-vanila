@@ -99,24 +99,50 @@ export async function getCurrentFilm(primaryKey, callback){
  * @param filmData
  * @return {Promise<void>}
  */
-export async function sendFilmDataToServer(filmData){
-    const data = transformFilmObjectToFBDoc(filmData);
-    let query = filmsRef;
+// export async function sendFilmDataToServer(filmData){
+//     const data = transformFilmObjectToFBDoc(filmData);
+//     let query = filmsRef;
+//     const existingFilmRefer = await  filmsRef
+//         .where('pk','==',data.pk)
+//         .get()
+//         .then((snapshot)=>{
+//             return snapshot.docs.map((doc)=>{
+//                 return doc.id;
+//             })
+//         });
+//     if(existingFilmRefer.length>0){
+//         query = query.doc(existingFilmRefer[0]);
+//     } else {
+//         query = query
+//             .doc();
+//     }
+//     await postRequestToAPI(query, data);
+// }
+
+export async function updateFilmQuery(filmData, callback){
+    const data = mapperFilmObjectToFBDoc(filmData);
     const existingFilmRefer = await  filmsRef
-        .where('pk','==',data.pk)
+        .where('pk','==', data.pk)
         .get()
-        .then((snapshot)=>{
+        .then((snapshot) => {
             return snapshot.docs.map((doc)=>{
                 return doc.id;
             })
         });
-    if(existingFilmRefer.length>0){
-        query = query.doc(existingFilmRefer[0]);
-    } else {
-        query = query
-            .doc();
-    }
-    await postRequestToAPI(query, data);
+    const query = filmsRef
+        .doc(existingFilmRefer[0]);
+    await postRequestToAPI(query, data, function(type, message){
+        callback(type, message)
+    })
+}
+
+export async function createFilmQuery(filmData, callback){
+    const data = mapperFilmObjectToFBDoc(filmData);
+    const query = filmsRef
+        .doc();
+    await postRequestToAPI(query, data, function(type, message){
+        callback(type, message)
+    })
 }
 
 /**
@@ -124,7 +150,7 @@ export async function sendFilmDataToServer(filmData){
  * @param film
  * @return {any}
  */
-function transformFilmObjectToFBDoc(film){
+function mapperFilmObjectToFBDoc(film){
     const pk = film.pk;
     delete film.pk;
     return JSON.parse(JSON.stringify({
@@ -142,10 +168,10 @@ function transformFilmObjectToFBDoc(film){
 export async function deleteCurrentFilm(primaryKey){
     let query = filmsRef;
     const Refer = await  filmsRef
-        .where('pk','==',primaryKey)
+        .where('pk', '==', primaryKey)
         .get()
-        .then((snapshot)=>{
-            return snapshot.docs.map((doc)=>{
+        .then((snapshot) => {
+            return snapshot.docs.map((doc) => {
                 return doc.id;
             })
         });
@@ -153,10 +179,10 @@ export async function deleteCurrentFilm(primaryKey){
     await query
         .doc(Refer[0])
         .delete()
-        .then(()=>{
+        .then(() => {
             openModalWindow('success','Film was deleted successfully')
         })
-        .catch((error)=>{
-            openModalWindow('error',error);
+        .catch((error) => {
+            openModalWindow('error', error);
         })
 }

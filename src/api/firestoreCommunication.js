@@ -60,14 +60,14 @@ function castItemDataToEntityClass(doc, entity){
  * @param value
  * @return {Promise<*>}
  */
-export async function postRequestToAPI(query, value){
+export async function postRequestToAPI(query, value, callback){
     return await query
         .set(value)
         .then(()=>{
-            openModalWindow('success','Document successfully written!');
+            callback('success','Document successfully written!');
             window.open('../','_self');
         })
         .catch((error)=>{
-            openModalWindow('error',error);
+            callback('error',error);
         })
 }

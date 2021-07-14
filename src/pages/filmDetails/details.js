@@ -57,7 +57,12 @@ document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id',
 document.getElementById('characters-panel').innerHTML = '<ul id = "characters-list"></ul>';
 charactersAccordionElement.addEventListener('click', async () => {
   if (characters.length == 0){
-    await fillCharactersList();
+    characters = await fillDataList(
+        film.characters,
+        getDataListsFromAPIFunctionsList.getCharactersList,
+        characters,
+        document.getElementById('characters-list'),
+        charactersAccordionElement);
   }
 });
 
@@ -69,9 +74,14 @@ const planetsAccordionElement = document.getElementsByClassName('accordion-butto
 planetsAccordionElement.innerText = 'PLANETS';
 document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
 document.getElementById('planets-panel').innerHTML = '<ul id = "planets-list"></ul>';
-planetsAccordionElement.addEventListener('click', () => {
+planetsAccordionElement.addEventListener('click', async () => {
   if (planets.length == 0){
-    fillPlanetsList();
+    planets = await fillDataList(
+        film.planets,
+        getDataListsFromAPIFunctionsList.getPlanetsList,
+        planets,
+        document.getElementById('planets-list'),
+        planetsAccordionElement);
   }
 });
 
@@ -83,9 +93,14 @@ const speciesAccordionElement = document.getElementsByClassName('accordion-butto
 speciesAccordionElement.innerText = 'SPECIES';
 document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
 document.getElementById('species-panel').innerHTML = '<ul id = "species-list"></ul>';
-speciesAccordionElement.addEventListener('click', () => {
+speciesAccordionElement.addEventListener('click', async () => {
   if (species.length == 0){
-    fillSpeciesList();
+    species = await fillDataList(
+        film.species,
+        getDataListsFromAPIFunctionsList.getSpeciesList,
+        species,
+        document.getElementById('species-list'),
+        speciesAccordionElement);
   }
 });
 
@@ -97,9 +112,14 @@ const starshipsAccordionElement = document.getElementsByClassName('accordion-but
 starshipsAccordionElement.innerText = 'STARSHIPS';
 document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starship-panel');
 document.getElementById('starship-panel').innerHTML = '<ul id = "starships-list"></ul>';
-starshipsAccordionElement.addEventListener('click', () => {
+starshipsAccordionElement.addEventListener('click', async () => {
   if (starships.length == 0){
-    fillStarshipsList();
+    starships = await fillDataList(
+        film.starships,
+        getDataListsFromAPIFunctionsList.getStarshipsList,
+        starships,
+        document.getElementById('starships-list'),
+        starshipsAccordionElement);
   }
 });
 
@@ -111,9 +131,14 @@ const vehiclesAccordionElement = document.getElementsByClassName('accordion-butt
 vehiclesAccordionElement.innerText = 'VEHICLES';
 document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
 document.getElementById('vehicles-panel').innerHTML = '<ul id = "vehicles-list"></ul>';
-vehiclesAccordionElement.addEventListener('click', () => {
+vehiclesAccordionElement.addEventListener('click', async () => {
   if (vehicles.length == 0){
-    fillVehiclesList();
+    vehicles = await fillDataList(
+        film.vehicles,
+        getDataListsFromAPIFunctionsList.getVehiclesList,
+        vehicles,
+        document.getElementById('vehicles-list'),
+        vehiclesAccordionElement);
   }
 });
 
@@ -147,107 +172,43 @@ function displayFilmBasicDetails(film){
  * and after get response - render it to list on accordion body
  * @return {Promise<void>}
  */
-async function fillCharactersList(){
-  const countOfFilmCharacters = film.characters.length;
+
+const getDataListsFromAPIFunctionsList = {
+  getCharactersList: getPeopleListByPrimaryKeys,
+  getPlanetsList: getPlanetsByKeyList,
+  getSpeciesList: getSpeciesByKeyList,
+  getStarshipsList: getStarshipsByKeyList,
+  getVehiclesList: getVehicleByKeyList
+}
+
+async function fillDataList(entityList, getFunction, dataList, listHTMLElement, accordionHTMLElement){
+  const dataListLength = entityList.length;
   //unfortunatelly, firestore can send back values,
   //which has primary key, included in array of keys
   //only for 10 max keys.
   //So, i just separate my keys array for pieces with 10 values;
   //And get all data, that i need without data, which i don't need;
   //optimization, bitch!(c) *Jesse_Pinkman.PNG*
-  for(let i = 0; i <= countOfFilmCharacters; i += 10){
-    let listForQuery = film.characters.slice(i, i + 10);
-     if (listForQuery != [] && listForQuery.length > 0){
-      const result = await getPeopleListByPrimaryKeys(listForQuery, function(type, message){
-        openModalWindow(type, message)
+  for(let i = 0; i <= dataListLength; i += 10){
+    const listForQuery = entityList.slice(i, i + 10);
+    if (listForQuery != [] && listForQuery.length > 0) {
+      const result = await getFunction(listForQuery, function (type, message){
+        openModalWindow(type, message);
       });
-      characters = characters.concat(result);
+      dataList = dataList.concat(result);
     }
   }
-  characters.forEach(character => {
-    const newLi = document.createElement('li');
-    newLi.innerText = character.name;
-    document.getElementById('characters-list').appendChild(newLi);
-  })
-  charactersAccordionElement.nextElementSibling.style.maxHeight = 24*characters.length + 'px';
-}
-
-async function fillPlanetsList(){
-  const countOfFilmPlanets = film.planets.length;
-  for(let i = 0; i <= countOfFilmPlanets; i += 10){
-    let listForQuery = film.planets.slice(i, i + 10);
-     if (listForQuery != [] && listForQuery.length > 0){
-      const result = await getPlanetsByKeyList(listForQuery, function(type, message){
-        openModalWindow(type, message)
-      });
-      planets = planets.concat(result);
+  dataList.forEach(item => {
+    const newLI = document.createElement('li');
+    if(item.starship_class){
+      newLI.innerText = item.starship_class
+    } else if (item.vehicle_class){
+      newLI.innerText = item.vehicle_class
+    } else {
+      newLI.innerText = item.name
     }
-  }
-  planets.forEach(planet => {
-    const newLi = document.createElement('li');
-    newLi.innerText = planet.name;
-    document.getElementById('planets-list').appendChild(newLi);
+  listHTMLElement.appendChild(newLI);
   })
-  planetsAccordionElement.nextElementSibling.style.maxHeight = 24*planets.length + 'px';
-
-}
-
-async function fillSpeciesList(){
-  const countOfFilmSpecies = film.species.length;
-  for(let i = 0; i <= countOfFilmSpecies; i += 10){
-    let listForQuery = film.species.slice(i, i + 10);
-     if (listForQuery != [] && listForQuery.length>0){
-      const result = await getSpeciesByKeyList(listForQuery, function(type, message){
-        openModalWindow(type, message)
-      });
-      species = species.concat(result);
-    }
-  }
-  species.forEach(spec => {
-    const newLi = document.createElement('li');
-    newLi.innerText = spec.name;
-    document.getElementById('species-list').appendChild(newLi);
-  })
-  speciesAccordionElement.nextElementSibling.style.maxHeight = 24*species.length + 'px';
-
-}
-
-async function fillStarshipsList(){
-  const countOfFilmStarships = film.starships.length;
-  for(let i = 0; i <= countOfFilmStarships; i += 10){
-    let listForQuery = film.starships.slice(i, i + 10);
-     if (listForQuery != [] && listForQuery.length > 0){
-      const result = await getStarshipsByKeyList(listForQuery, function(type, message){
-        openModalWindow(type, message)
-      });
-      starships = starships.concat(result);
-    }
-  }
-  starships.forEach(spec => {
-    const newLi = document.createElement('li');
-    newLi.innerText = spec.starship_class;
-    document.getElementById('starships-list').appendChild(newLi);
-  })
-  starshipsAccordionElement.nextElementSibling.style.maxHeight = 24*starships.length + 'px';
-
-}
-
-async function fillVehiclesList(){
-  const countOfFilmVehicles = film.vehicles.length;
-  for(let i = 0; i <= countOfFilmVehicles; i += 10){
-    let listForQuery = film.vehicles.slice(i, i + 10);
-     if (listForQuery != [] && listForQuery.length > 0){
-      const result = await getVehicleByKeyList(listForQuery, function(type, message){
-        openModalWindow(type, message)
-      });
-      vehicles = vehicles.concat(result);
-    }
-  }
-  vehicles.forEach(spec => {
-    const newLi = document.createElement('li');
-    newLi.innerText = spec.vehicle_class;
-    document.getElementById('vehicles-list').appendChild(newLi);
-  })
-  vehiclesAccordionElement.nextElementSibling.style.maxHeight = 24*vehicles.length + 'px';
-
+  accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * entityList.length + 'px';
+  return dataList;
 }
