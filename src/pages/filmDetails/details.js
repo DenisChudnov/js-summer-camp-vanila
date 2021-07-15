@@ -168,7 +168,12 @@ function displayFilmBasicDetails(film){
  * @return {Promise<void>}
  */
 
-async function fillDataList(entityName, entityList, dataList, listHTMLElement, accordionHTMLElement){
+async function fillDataList(
+    entityName,
+    entityList,
+    dataList,
+    listHTMLElement,
+    accordionHTMLElement){
   dataList = await getDataByKeysList(entityName, entityList, function (type, message) {
     openModalWindow(type, message);
   })

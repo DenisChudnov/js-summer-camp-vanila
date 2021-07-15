@@ -1,4 +1,3 @@
-// import {People, createPeople} frapi layer shouldn't open a dialog, it just makes a request and return a valueom '../../utils/models/people';
 import '../../utils/models/people.js'
 import {peopleRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';

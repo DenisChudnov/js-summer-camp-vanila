@@ -37,3 +37,10 @@ export async function getDataByKeysList(entity, keysList, callback){
     return result;
 
 }
+
+export async function getDataFullList(entity, callback){
+    const query = listOfReferences[entity];
+    return await getRequestToAPI(query, entity, function (type, message){
+        callback(type, message);
+    });
+}

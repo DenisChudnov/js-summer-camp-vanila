@@ -11,6 +11,7 @@ import {getFullPlanetsList} from "../../api/services/planetService";
 import {getFullSpeciesList} from "../../api/services/speciesService";
 import {getFullStarshipsList} from "../../api/services/starshipService";
 import {getFullVehicleList} from "../../api/services/vehicleService";
+import {getDataFullList} from "../../api/services/detailsService";
 
 //some variables for page managment
 let characters = [];
@@ -26,8 +27,14 @@ document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id',
 document.getElementById('characters-panel').innerHTML = '<ul id="characters-list"></ul>';
 charactersAccordionElement.addEventListener('click', async () => {
     if (characters.length == 0){
-        await getListOfCharacters();
-        renderCharactersListSelector();
+        characters = await getEntityDataListFromAPI('people');
+        renderDataListSelector(
+            film.characters,
+            characters,
+            document.getElementById('characters-list'),
+            charactersAccordionElement,
+            'name'
+        )
     }
 });
 
@@ -37,8 +44,14 @@ document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id',
 document.getElementById('planets-panel').innerHTML = '<ul id="planets-list"></ul>';
 planetsAccordionElement.addEventListener('click', async () => {
     if (planets.length == 0){
-        await getListOfPlanets();
-        renderPlanetsListSelector();
+        planets = await getEntityDataListFromAPI('planet');
+        renderDataListSelector(
+            film.planets,
+            planets,
+            document.getElementById('planets-list'),
+            planetsAccordionElement,
+            'name'
+        )
     }
 });
 
@@ -48,8 +61,14 @@ document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id',
 document.getElementById('species-panel').innerHTML = '<ul id="species-list"></ul>';
 speciesAccordionElement.addEventListener('click', async () => {
     if (species.length == 0){
-        await getListOfSpecies();
-        renderSpeciesListSelector();
+        species = await getEntityDataListFromAPI('species');
+        renderDataListSelector(
+            film.species,
+            species,
+            document.getElementById('species-list'),
+            speciesAccordionElement,
+            'name'
+        )
     }
 });
 
@@ -59,8 +78,14 @@ document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id',
 document.getElementById('starships-panel').innerHTML = '<ul id="starships-list"></ul>';
 starshipsAccordionElement.addEventListener('click', async () => {
     if (starships.length == 0){
-        await getListOfStarships();
-        renderStarshipsListSelector();
+        starships = await getEntityDataListFromAPI('starship');
+        renderDataListSelector(
+            film.starships,
+            starships,
+            document.getElementById('starships-list'),
+            starshipsAccordionElement,
+            'starship_class'
+        )
     }
 });
 
@@ -70,8 +95,14 @@ document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id',
 document.getElementById('vehicles-panel').innerHTML = '<ul id="vehicles-list"></ul>';
 vehiclesAccordionElement.addEventListener('click', async () => {
     if (vehicles.length == 0){
-        await getListOfVehicles();
-        renderVehiclesListSelector();
+        vehicles = await getEntityDataListFromAPI('vehicle');
+        renderDataListSelector(
+            film.vehicles,
+            vehicles,
+            document.getElementById('vehicles-list'),
+            vehiclesAccordionElement,
+            'vehicle_class'
+        )
     }
 });
 
@@ -113,130 +144,43 @@ function renderBasicFilmInformation(){
     document.getElementById('film-release-date').value = film.release_date;
 }
 
-async function getListOfCharacters(){
-    characters = await getFullPeoplesList();
-}
-
-function renderCharactersListSelector(){
-    characters.forEach(function(item){
+function renderDataListSelector(
+    filmDataList,
+    APIDataList,
+    listHTMLElement,
+    accordionHTMLElement,
+    displayingFieldName
+    ){
+    APIDataList.forEach(function (item){
         let checkedAttribute = '';
-        if(film.characters.includes(item.pk)){
-            checkedAttribute = 'checked'
+        if(filmDataList.includes(item.pk)){
+            checkedAttribute = 'checked';
         }
-        const element = document.createElement('li');
-
-        element.innerHTML += `
-        <input name="character-check-${item.pk}" 
-        class="character-check" 
-        type="checkbox" 
+        const listItem = document.createElement('li');
+        listItem.innerHTML += `
+        <input
+        type="checkbox"
+        class="check"
         value=${item.pk}
-        ${checkedAttribute}>
-        <label class="character-checkbox-label" 
-        for="character-check">${item.name}</label>
+        ${checkedAttribute}
+        >
+        <label
+        class="checkbox-label"
+        for="check"
+        >
+        ${item[displayingFieldName]}
+        </label>
         <br>
         `;
-        document.getElementById('characters-list').appendChild(element);
+        listHTMLElement.appendChild(listItem);
     })
+    accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * APIDataList.length + 'px';
+
 }
 
-async function getListOfPlanets(){
-    planets = await getFullPlanetsList();
-}
-
-function renderPlanetsListSelector(){
-    planets.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.planets.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-
-        element.innerHTML += `
-        <input name="planet-check-${item.pk}" 
-        class="planet-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="planet-checkbox-label" 
-        for="planet-check">${item.name}</label>
-        <br>
-        `;
-        document.getElementById('planets-list').appendChild(element);
-    })
-}
-
-async function getListOfSpecies(){
-    species = await getFullSpeciesList();
-}
-
-function renderSpeciesListSelector(){
-    species.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.species.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="species-check-${item.pk}" 
-        class="species-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="species-checkbox-label" 
-        for="species-check">${item.name}</label>
-        <br>
-        `;
-        document.getElementById('species-list').appendChild(element);
-    })
-}
-
-async function getListOfStarships(){
-    starships = await getFullStarshipsList();
-}
-
-function renderStarshipsListSelector(){
-    starships.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.starships.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="starships-check-${item.pk}" 
-        class="starships-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="starships-checkbox-label" 
-        for="starships-check">${item.starship_class}</label>
-        <br>
-        `;
-        document.getElementById('starships-list').appendChild(element);
-    })
-}
-
-async function getListOfVehicles(){
-    vehicles = await getFullVehicleList();
-}
-
-function renderVehiclesListSelector(){
-    vehicles.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.vehicles.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="vehicles-check-${item.pk}" 
-        class="vehicles-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="vehicles-checkbox-label" 
-        for="vehicles-check">${item.vehicle_class}</label>
-        <br>
-        `;
-        document.getElementById('vehicles-list').appendChild(element);
+async function getEntityDataListFromAPI(entityName){
+    return await getDataFullList(entityName, function (type, message){
+        openModalWindow(type, message);
     })
 }
 
