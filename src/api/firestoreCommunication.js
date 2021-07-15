@@ -71,3 +71,4 @@ export async function postRequestToAPI(query, value, callback){
             callback('error',error);
         })
 }
+

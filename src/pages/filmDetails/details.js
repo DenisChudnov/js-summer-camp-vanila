@@ -4,13 +4,8 @@ import '../../components/header/header.js';
 import '../../components/accordion/accordion.js';
 import {checkUserInLocalStorage} from '../../utils/authLocalStorage';
 import {getCurrentFilm} from '../../api/services/filmService';
-import {getPeopleListByPrimaryKeys} from "../../api/services/peopleService";
-import {getPlanetsByKeyList} from "../../api/services/planetService";
-import {getSpeciesByKeyList} from "../../api/services/speciesService";
-import {getStarshipsByKeyList} from "../../api/services/starshipService";
-import {getVehicleByKeyList} from "../../api/services/vehicleService";
-
 import {openModalWindow} from "../../components/modal/modal";
+import {getDataByKeysList} from "../../api/services/detailsService";
 
 //some variables for page managment
 let characters = [];
@@ -58,8 +53,8 @@ document.getElementById('characters-panel').innerHTML = '<ul id = "characters-li
 charactersAccordionElement.addEventListener('click', async () => {
   if (characters.length == 0){
     characters = await fillDataList(
+        'people',
         film.characters,
-        getDataListsFromAPIFunctionsList.getCharactersList,
         characters,
         document.getElementById('characters-list'),
         charactersAccordionElement);
@@ -77,8 +72,8 @@ document.getElementById('planets-panel').innerHTML = '<ul id = "planets-list"></
 planetsAccordionElement.addEventListener('click', async () => {
   if (planets.length == 0){
     planets = await fillDataList(
+        'planet',
         film.planets,
-        getDataListsFromAPIFunctionsList.getPlanetsList,
         planets,
         document.getElementById('planets-list'),
         planetsAccordionElement);
@@ -96,8 +91,8 @@ document.getElementById('species-panel').innerHTML = '<ul id = "species-list"></
 speciesAccordionElement.addEventListener('click', async () => {
   if (species.length == 0){
     species = await fillDataList(
+        'species',
         film.species,
-        getDataListsFromAPIFunctionsList.getSpeciesList,
         species,
         document.getElementById('species-list'),
         speciesAccordionElement);
@@ -115,8 +110,8 @@ document.getElementById('starship-panel').innerHTML = '<ul id = "starships-list"
 starshipsAccordionElement.addEventListener('click', async () => {
   if (starships.length == 0){
     starships = await fillDataList(
+        'starship',
         film.starships,
-        getDataListsFromAPIFunctionsList.getStarshipsList,
         starships,
         document.getElementById('starships-list'),
         starshipsAccordionElement);
@@ -134,8 +129,8 @@ document.getElementById('vehicles-panel').innerHTML = '<ul id = "vehicles-list">
 vehiclesAccordionElement.addEventListener('click', async () => {
   if (vehicles.length == 0){
     vehicles = await fillDataList(
+        'vehicle',
         film.vehicles,
-        getDataListsFromAPIFunctionsList.getVehiclesList,
         vehicles,
         document.getElementById('vehicles-list'),
         vehiclesAccordionElement);
@@ -173,31 +168,11 @@ function displayFilmBasicDetails(film){
  * @return {Promise<void>}
  */
 
-const getDataListsFromAPIFunctionsList = {
-  getCharactersList: getPeopleListByPrimaryKeys,
-  getPlanetsList: getPlanetsByKeyList,
-  getSpeciesList: getSpeciesByKeyList,
-  getStarshipsList: getStarshipsByKeyList,
-  getVehiclesList: getVehicleByKeyList
-}
+async function fillDataList(entityName, entityList, dataList, listHTMLElement, accordionHTMLElement){
+  dataList = await getDataByKeysList(entityName, entityList, function (type, message) {
+    openModalWindow(type, message);
+  })
 
-async function fillDataList(entityList, getFunction, dataList, listHTMLElement, accordionHTMLElement){
-  const dataListLength = entityList.length;
-  //unfortunatelly, firestore can send back values,
-  //which has primary key, included in array of keys
-  //only for 10 max keys.
-  //So, i just separate my keys array for pieces with 10 values;
-  //And get all data, that i need without data, which i don't need;
-  //optimization, bitch!(c) *Jesse_Pinkman.PNG*
-  for(let i = 0; i <= dataListLength; i += 10){
-    const listForQuery = entityList.slice(i, i + 10);
-    if (listForQuery != [] && listForQuery.length > 0) {
-      const result = await getFunction(listForQuery, function (type, message){
-        openModalWindow(type, message);
-      });
-      dataList = dataList.concat(result);
-    }
-  }
   dataList.forEach(item => {
     const newLI = document.createElement('li');
     if(item.starship_class){

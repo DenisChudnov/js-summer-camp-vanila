@@ -2,18 +2,6 @@ import '../../utils/models/starship';
 import {starshipsRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
-/**
- * Function for get starships object array from API by primary keys array;
- * @param keyList
- * @return {Promise<*[]>}
- */
-export async function getStarshipsByKeyList(keyList, callback){
-    const query = starshipsRef
-        .where('pk','in',keyList);
-    return await getRequestToAPI(query,'starship', function(type, message){
-        callback(type, message)
-    });
-}
 
 export async function getFullStarshipsList(){
     const query = starshipsRef;

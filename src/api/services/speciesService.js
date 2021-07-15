@@ -2,20 +2,6 @@ import '../../utils/models/species';
 import {speciesRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
-/**
- * Function for get list of Species from API by list of primary keys;
- * Return array of Species clas objects;
- * @param keyList
- * @return {Promise<*[]>}
- */
-
-export async function getSpeciesByKeyList(keyList, callback){
-    let query = speciesRef
-        .where('pk','in',keyList);
-    return await getRequestToAPI(query,'species', function(type, message){
-        callback(type, message)
-    });
-}
 
 export async function getFullSpeciesList(){
     const query = speciesRef;

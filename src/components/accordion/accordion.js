@@ -16,16 +16,16 @@ class Accordion extends HTMLElement {
         </div> 
         `;
     const openButton = this.getElementsByTagName('button')[0];
-    openButton.addEventListener('click', listener);
+    openButton.addEventListener('click', openAccordionPanel);
   }
 
   disconnectedCallback(){
-    this.removeEventListener('click', listener);
+    this.removeEventListener('click', openAccordionPanel);
   }
 
 }
 
-function listener(){
+function openAccordionPanel(){
   this.classList.toggle('active');
   const panel = this.nextElementSibling;
   if (panel.style.maxHeight) {

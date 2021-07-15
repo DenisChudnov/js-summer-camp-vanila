@@ -91,34 +91,6 @@ export async function getCurrentFilm(primaryKey, callback){
     return result[0];
 }
 
-/**
- * function for send film's data to server.
- * If film with same primary key is already exist -
- * there are build update query.
- * If is brand new film - build create query
- * @param filmData
- * @return {Promise<void>}
- */
-// export async function sendFilmDataToServer(filmData){
-//     const data = transformFilmObjectToFBDoc(filmData);
-//     let query = filmsRef;
-//     const existingFilmRefer = await  filmsRef
-//         .where('pk','==',data.pk)
-//         .get()
-//         .then((snapshot)=>{
-//             return snapshot.docs.map((doc)=>{
-//                 return doc.id;
-//             })
-//         });
-//     if(existingFilmRefer.length>0){
-//         query = query.doc(existingFilmRefer[0]);
-//     } else {
-//         query = query
-//             .doc();
-//     }
-//     await postRequestToAPI(query, data);
-// }
-
 export async function updateFilmQuery(filmData, callback){
     const data = mapperFilmObjectToFBDoc(filmData);
     const existingFilmRefer = await  filmsRef
