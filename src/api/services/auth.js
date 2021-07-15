@@ -1,7 +1,5 @@
 import {auth} from '../firebaseSettings.js';
 import {addUserToLocalStorage, removeUserFromLocalStorage} from '../../utils/authLocalStorage';
-import {setAuthButtonText} from '../../components/header/header';
-
 /**
  * Function for registration with cred in params;
  * @param email string
@@ -29,7 +27,6 @@ export async function login(email, password, callback) {
   auth.signInWithEmailAndPassword(email, password)
     .then(async (userCredenial) => {
       await addUserToLocalStorage(auth.currentUser);
-      setAuthButtonText();
         callback('welcome','welcome to swapp!')
         window.open('./', '_self');
     })

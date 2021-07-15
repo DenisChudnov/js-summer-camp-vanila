@@ -12,9 +12,9 @@ class Header extends HTMLElement {
 
   connectedCallback(){
     this.innerHTML = `   
-        <nav class = "navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class = "container-fluid">
-                <a class = "navbar-brand" href="../">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="../">
                     <span>LOGO.png :)</span>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarText">
@@ -23,51 +23,45 @@ class Header extends HTMLElement {
                             <a class="nav-link" id="films-table-link" href="../">Films</a>
                         </li>
                     </ul>
-                    <button class = "btn btn-outline-success" type = "button" id = "auth-call-btn"></button>
+                    <button class="btn btn-outline-success" type="button" id="auth-call-btn"></button>
                 </div>
             </div>
         </nav>
        `;
-  }
 
-}
+    this.authButton = document.getElementById('auth-call-btn');
+    this.authButton.addEventListener('click', handlerAuthButtonClick);
 
-
-customElements.get('header-component') || customElements.define('header-component', Header);
-
-const authButton = document.getElementById('auth-call-btn');
-
-document.addEventListener('DOMContentLoaded', () => {
-  setAuthButtonText();
-  if (checkUserInLocalStorage()){
-    document.getElementById('links-list').innerHTML += `
+    document.addEventListener('DOMContentLoaded', () => {
+      this.setAuthButtonText();
+      if (checkUserInLocalStorage()){
+        document.getElementById('links-list').innerHTML += `
      <li class="nav-item" id="new-film-create-item">
         <a class="nav-link" id="new-film-create-link" href="../management.html">Create new film</a>
      </li>
     `;
+      }
+    });
+
   }
-});
 
+  disconnectedCallback(){
+    this.authButton.removeEventListener('click', handlerAuthButtonClick);
+  }
 
-/**
- * Handler of click on auth-button
- * redirect to login page and
- * logout, if user is already logged in
- */
-authButton.addEventListener('click', () => {
+  setAuthButtonText(){
+    this.authButton.innerText = checkUserInLocalStorage() ? 'Logout' : 'Login';
+  }
+
+}
+
+function handlerAuthButtonClick(){
   if (checkUserInLocalStorage()) {
     logout();
   }
   window.open('auth.html', '_self');
-});
-
-/**
- * Simple function for set text on auth-button
- * if user is logged in - text is Logout
- * and in other case - text is Login
- */
-export function setAuthButtonText(){
-  authButton.innerText = checkUserInLocalStorage() ? 'Logout' : 'Login';
 }
+
+customElements.get('header-component') || customElements.define('header-component', Header);
 
 

@@ -163,9 +163,6 @@ function renderDataListSelector(
     displayingFieldName,
     entityName
     ){
-
-    console.log(`${entityName}+'-check'`)
-
     APIDataList.forEach(function (item){
         let checkedAttribute = '';
         if(filmDataList.includes(item.pk)){
@@ -192,56 +189,6 @@ function renderDataListSelector(
     })
     accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * APIDataList.length + 'px';
 
-}
-
-async function getListOfStarships(){
-    starships = await getEntityDataListFromAPI('starship');
-}
-
-function renderStarshipsListSelector(){
-    starships.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.starships.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="starships-check-${item.pk}" 
-        class="starships-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="starships-checkbox-label" 
-        for="starships-check">${item.starship_class}</label>
-        <br>
-        `;
-        document.getElementById('starships-list').appendChild(element);
-    })
-}
-
-async function getListOfVehicles(){
-    vehicles = await getEntityDataListFromAPI('vehicle');
-}
-
-function renderVehiclesListSelector(){
-    vehicles.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.vehicles.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="vehicles-check-${item.pk}" 
-        class="vehicles-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="vehicles-checkbox-label" 
-        for="vehicles-check">${item.vehicle_class}</label>
-        <br>
-        `;
-        document.getElementById('vehicles-list').appendChild(element);
-    })
 }
 
 async function getEntityDataListFromAPI(entityName){
