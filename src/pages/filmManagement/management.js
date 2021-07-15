@@ -33,7 +33,8 @@ charactersAccordionElement.addEventListener('click', async () => {
             characters,
             document.getElementById('characters-list'),
             charactersAccordionElement,
-            'name'
+            'name',
+            'character'
         )
     }
 });
@@ -50,7 +51,8 @@ planetsAccordionElement.addEventListener('click', async () => {
             planets,
             document.getElementById('planets-list'),
             planetsAccordionElement,
-            'name'
+            'name',
+            'planet'
         )
     }
 });
@@ -61,13 +63,16 @@ document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id',
 document.getElementById('species-panel').innerHTML = '<ul id="species-list"></ul>';
 speciesAccordionElement.addEventListener('click', async () => {
     if (species.length == 0){
+        // await getListOfSpecies();
+        // renderSpeciesListSelector();
         species = await getEntityDataListFromAPI('species');
         renderDataListSelector(
             film.species,
             species,
             document.getElementById('species-list'),
             speciesAccordionElement,
-            'name'
+            'name',
+            'species'
         )
     }
 });
@@ -78,13 +83,16 @@ document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id',
 document.getElementById('starships-panel').innerHTML = '<ul id="starships-list"></ul>';
 starshipsAccordionElement.addEventListener('click', async () => {
     if (starships.length == 0){
+        // await getListOfStarships();
+        // renderStarshipsListSelector();
         starships = await getEntityDataListFromAPI('starship');
         renderDataListSelector(
             film.starships,
             starships,
             document.getElementById('starships-list'),
             starshipsAccordionElement,
-            'starship_class'
+            'starship_class',
+            'starships'
         )
     }
 });
@@ -95,13 +103,16 @@ document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id',
 document.getElementById('vehicles-panel').innerHTML = '<ul id="vehicles-list"></ul>';
 vehiclesAccordionElement.addEventListener('click', async () => {
     if (vehicles.length == 0){
+        // await getListOfVehicles();
+        // renderVehiclesListSelector();
         vehicles = await getEntityDataListFromAPI('vehicle');
         renderDataListSelector(
             film.vehicles,
             vehicles,
             document.getElementById('vehicles-list'),
             vehiclesAccordionElement,
-            'vehicle_class'
+            'vehicle_class',
+            'vehicles'
         )
     }
 });
@@ -149,8 +160,12 @@ function renderDataListSelector(
     APIDataList,
     listHTMLElement,
     accordionHTMLElement,
-    displayingFieldName
+    displayingFieldName,
+    entityName
     ){
+
+    console.log(`${entityName}+'-check'`)
+
     APIDataList.forEach(function (item){
         let checkedAttribute = '';
         if(filmDataList.includes(item.pk)){
@@ -159,14 +174,15 @@ function renderDataListSelector(
         const listItem = document.createElement('li');
         listItem.innerHTML += `
         <input
-        type="checkbox"
-        class="check"
+        name = ${entityName}-check-${item.pk}
+        class=${entityName}-check
+        type=checkbox
         value=${item.pk}
         ${checkedAttribute}
         >
         <label
-        class="checkbox-label"
-        for="check"
+        class=${entityName}-checkbox-label
+        for=${entityName}-check
         >
         ${item[displayingFieldName]}
         </label>
@@ -176,6 +192,56 @@ function renderDataListSelector(
     })
     accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * APIDataList.length + 'px';
 
+}
+
+async function getListOfStarships(){
+    starships = await getEntityDataListFromAPI('starship');
+}
+
+function renderStarshipsListSelector(){
+    starships.forEach(function(item){
+        let checkedAttribute = '';
+        if(film.starships.includes(item.pk)){
+            checkedAttribute = 'checked'
+        }
+        const element = document.createElement('li');
+        element.innerHTML += `
+        <input name="starships-check-${item.pk}" 
+        class="starships-check" 
+        type="checkbox" 
+        value=${item.pk}
+        ${checkedAttribute}>
+        <label class="starships-checkbox-label" 
+        for="starships-check">${item.starship_class}</label>
+        <br>
+        `;
+        document.getElementById('starships-list').appendChild(element);
+    })
+}
+
+async function getListOfVehicles(){
+    vehicles = await getEntityDataListFromAPI('vehicle');
+}
+
+function renderVehiclesListSelector(){
+    vehicles.forEach(function(item){
+        let checkedAttribute = '';
+        if(film.vehicles.includes(item.pk)){
+            checkedAttribute = 'checked'
+        }
+        const element = document.createElement('li');
+        element.innerHTML += `
+        <input name="vehicles-check-${item.pk}" 
+        class="vehicles-check" 
+        type="checkbox" 
+        value=${item.pk}
+        ${checkedAttribute}>
+        <label class="vehicles-checkbox-label" 
+        for="vehicles-check">${item.vehicle_class}</label>
+        <br>
+        `;
+        document.getElementById('vehicles-list').appendChild(element);
+    })
 }
 
 async function getEntityDataListFromAPI(entityName){
