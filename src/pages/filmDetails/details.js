@@ -140,7 +140,7 @@ vehiclesAccordionElement.addEventListener('click', async () => {
 
 /**
  * This function get integer key and return film object with equal primary key.
- * @param key
+ * @param {Number} key - primary key of current film
  * @return {Promise<*>}
  */
 export async function getCurrentFilmData(key){
@@ -151,7 +151,7 @@ export async function getCurrentFilmData(key){
 
 /**
  * This function for render basic film data, which not required additional API requests;
- * @param film
+ * @param {Object} film
  */
 function displayFilmBasicDetails(film){
   document.getElementById('film-title').innerText = film.title;
@@ -168,6 +168,15 @@ function displayFilmBasicDetails(film){
  * @return {Promise<void>}
  */
 
+/**
+ * Function for render list of entity objects, included in film
+ * @param {string} entityName name of entity, which objects need to render
+ * @param {Array} entityList list of entityes object, included in film
+ * @param {Array} dataList list of all entiyes objects
+ * @param {Element} listHTMLElement - element list of entityes
+ * @param {Element} accordionHTMLElement element accordion panel
+ * @return {Promise<*[]>}
+ */
 async function fillDataList(
     entityName,
     entityList,

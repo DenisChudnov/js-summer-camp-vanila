@@ -42,7 +42,7 @@ export async function getRequestToAPI(query, entity, callback){
 }
 
 /**
- * function for call method of transformation API getted value to frontend models classes;
+ * Function for call method of transformation API getted value to frontend models classes;
  * @param doc API doc
  * @param entity string entity name
  * @return {Film|Planet|Starship|Vehicle|Transport|Species|People} object of entity class|type;
@@ -60,15 +60,14 @@ function castItemDataToEntityClass(doc, entity){
  * @param value
  * @return {Promise<*>}
  */
-export async function postRequestToAPI(query, value, callback){
+export async function postRequestToAPI(query, valueToSend){
     return await query
-        .set(value)
-        .then(()=>{
-            callback('success','Document successfully written!');
-            window.open('../','_self');
+        .set(valueToSend)
+        .then((value)=>{
+            return 'success'
         })
         .catch((error)=>{
-            callback('error',error);
+            return error;
         })
 }
 

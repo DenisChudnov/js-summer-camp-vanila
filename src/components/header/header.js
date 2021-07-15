@@ -55,6 +55,11 @@ class Header extends HTMLElement {
 
 }
 
+/**
+ * Function for handling auth button
+ * if user logged in - he wil logout
+ * and in each case - redirect to auth page
+ */
 function handlerAuthButtonClick(){
   if (checkUserInLocalStorage()) {
     logout();

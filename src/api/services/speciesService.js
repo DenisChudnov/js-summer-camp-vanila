@@ -2,7 +2,10 @@ import '../../utils/models/species';
 import {speciesRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
-
+/**
+ * Function for get list of all species from API
+ * @return {Promise<*[]>}
+ */
 export async function getFullSpeciesList(){
     const query = speciesRef;
     return await getRequestToAPI(query, 'species');
@@ -10,8 +13,8 @@ export async function getFullSpeciesList(){
 
 /**
  * Function for transform doc from API to Species class object
- * @param doc
- * @return {Species}
+ * @param {Object} doc - doc object from api
+ * @return {Species} - type of species
  */
 export function castToSpeciesClass(doc, Species){
     Species = doc.fields;

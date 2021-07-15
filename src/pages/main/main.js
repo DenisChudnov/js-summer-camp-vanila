@@ -65,10 +65,6 @@ document
     renderOfDetailsColumn();
     renderOfManageColumn();
     renderOfDeleteColumn();
-    // let cell = document.createElement("th");
-    // cell.setAttribute('class','films-table-header')
-    // cell.appendChild(document.createTextNode('more...'))
-    // filmTable.rows[0].appendChild(cell);
   }
   renderUI();
 })

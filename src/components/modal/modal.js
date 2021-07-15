@@ -212,7 +212,11 @@ const modalWindowTypes = {
 }
 
 
-
+/**
+ * Function for rendering selected type of modal
+ * @param {Element} modal
+ * @param {string} message
+ */
 function renderSelectedModalWindow(modal, message){
   modal.setContent(`
   <p>${message}</p>
@@ -222,9 +226,9 @@ function renderSelectedModalWindow(modal, message){
 
 
 /**
- *
- * @param type
- * @param message
+ * Function for open window with selected type
+ * @param {string} type
+ * @param {string} message
  */
 export function openModalWindow(type, message){
   const selectedModalWindow = modalWindowTypes[type];

@@ -25,6 +25,10 @@ class Accordion extends HTMLElement {
 
 }
 
+/**
+ * Function for handling click of accordion and
+ * show accordion panel
+ */
 function openAccordionPanel(){
   this.classList.toggle('active');
   const panel = this.nextElementSibling;

@@ -272,18 +272,29 @@ function isFilmValid(){
 
 async function createFilm(){
     getFilmDataFromForm();
-    if(isFilmValid()){
-        await createFilmQuery(film, function (type, message){
-            openModalWindow(type, message)
-        });
+    if(isFilmValid){
+        await createFilmQuery(film)
+            .then(value => {
+                openModalWindow('success','film successfully created');
+                setTimeout(function (){
+                    window.open('../','_self')
+                },5000);
+            })
+            .catch(error => {
+                openModalWindow('error', error);
+            })
     }
 }
 
 async function updateFilm(){
     getFilmDataFromForm();
-    if(isFilmValid()){
-        await updateFilmQuery(film, function (type, message){
-            openModalWindow(type, message)
-        });
+    if(isFilmValid){
+        await updateFilmQuery(film)
+            .then(value => {
+                openModalWindow('success','film successfully updated');
+            })
+            .catch(error => {
+                openModalWindow('error', error);
+            })
     }
 }
