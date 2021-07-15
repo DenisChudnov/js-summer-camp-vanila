@@ -21,6 +21,15 @@ let starships = [];
 let vehicles = [];
 let film;
 
+/**
+ * CHARACTERS LIST, wich rendered only on click
+ * For every film data, which can require additional request -
+ * there are appear accordion element,
+ * which send request to get data only if user want to see this data.
+ * Every accordion created with custom element and has click event listener - to call API and render result.
+ * This actual for every accordion in this page;
+ * @type {Element}
+ */
 const charactersAccordionElement = document.getElementsByClassName('accordion-button-panel')[0];
 charactersAccordionElement.innerText = 'CHARACTERS';
 document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
@@ -39,6 +48,10 @@ charactersAccordionElement.addEventListener('click', async () => {
     }
 });
 
+/**
+ * PLANETS LIST, which render only on click
+ * @type {Element}
+ */
 const planetsAccordionElement = document.getElementsByClassName('accordion-button-panel')[1];
 planetsAccordionElement.innerText = 'PLANETS';
 document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
@@ -57,6 +70,10 @@ planetsAccordionElement.addEventListener('click', async () => {
     }
 });
 
+/**
+ * SPECIES LIST, render by click
+ * @type {Element}
+ */
 const speciesAccordionElement = document.getElementsByClassName('accordion-button-panel')[2];
 speciesAccordionElement.innerText = 'SPECIES';
 document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
@@ -77,6 +94,10 @@ speciesAccordionElement.addEventListener('click', async () => {
     }
 });
 
+/**
+ * STARSHIPS LIST, render by click
+ * @type {Element}
+ */
 const starshipsAccordionElement = document.getElementsByClassName('accordion-button-panel')[3];
 starshipsAccordionElement.innerText = 'STARSHIPS';
 document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starships-panel');
@@ -97,6 +118,10 @@ starshipsAccordionElement.addEventListener('click', async () => {
     }
 });
 
+/**
+ * VEHICLES LIST, render by click
+ * @type {Element}
+ */
 const vehiclesAccordionElement = document.getElementsByClassName('accordion-button-panel')[4];
 vehiclesAccordionElement.innerText = 'VEHICLES';
 document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
@@ -121,7 +146,6 @@ const createFilmButton = document.getElementById('create-film-button');
 const updateFilmButton = document.getElementById('update-film-button');
 
 createFilmButton.addEventListener('click',createFilm);
-
 updateFilmButton.addEventListener('click',updateFilm);
 
 document
@@ -146,6 +170,10 @@ document
         }
     })
 
+
+/**
+ * Simple function for render filminformation, which not need to requests
+ */
 function renderBasicFilmInformation(){
     document.getElementById('film-title').value = film.title;
     document.getElementById('film-director').value = film.director;
@@ -155,6 +183,15 @@ function renderBasicFilmInformation(){
     document.getElementById('film-release-date').value = film.release_date;
 }
 
+/**
+ * Function for render list of entityes objects
+ * @param {Array} filmDataList
+ * @param {Array} APIDataList
+ * @param {Element} listHTMLElement
+ * @param {Element} accordionHTMLElement
+ * @param {string} displayingFieldName
+ * @param {string} entityName
+ */
 function renderDataListSelector(
     filmDataList,
     APIDataList,
@@ -191,12 +228,18 @@ function renderDataListSelector(
 
 }
 
+/**
+ * Function for get all list of entity objects from API
+ * @param entityName
+ * @return {Promise<*[]>}
+ */
 async function getEntityDataListFromAPI(entityName){
-    return await getDataFullList(entityName, function (type, message){
-        openModalWindow(type, message);
-    })
+    return await getDataFullList(entityName)
 }
 
+/**
+ * Function for get film data, which entered in form by user
+ */
 function getFilmDataFromForm(){
     const formElement = document.getElementById('film-edit-form');
     const dataFromForm = new FormData(formElement);
@@ -231,6 +274,10 @@ function getAllCheckedRowsFromSelector(entity){
     return resultArray;
 }
 
+/**
+ * Funtion for check if entered data is valid
+ * @return {boolean}
+ */
 function isFilmValid(){
     let errorMessageText = '';
     if(film.title.length<=0){
@@ -270,6 +317,10 @@ function isFilmValid(){
 
 }
 
+/**
+ * Function for send request to creqte film with entered parameters
+ * @return {Promise<void>}
+ */
 async function createFilm(){
     getFilmDataFromForm();
     if(isFilmValid){
@@ -286,6 +337,10 @@ async function createFilm(){
     }
 }
 
+/**
+ * Function for update existing film with data, entered by user
+ * @return {Promise<void>}
+ */
 async function updateFilm(){
     getFilmDataFromForm();
     if(isFilmValid){

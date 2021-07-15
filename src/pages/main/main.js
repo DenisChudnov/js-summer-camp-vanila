@@ -70,30 +70,24 @@ document
 })
 
 function renderOfDetailsColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Info'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 function renderOfManageColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Edit'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 function renderOfDeleteColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Delete'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 document
@@ -125,7 +119,13 @@ document
  * @param lastValueOnPage
  * @return {Promise<*[]>}
  */
-async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage,  direction,firstValueOnPage = '', lastValueOnPage = '', searchValue = ''){
+async function getFilmListFromAPI(
+    sortingField = defaultSortingField,
+    sortingOrder = defaultSortingOrder,
+    limit = defaultFilmsCountOnPage,
+    direction,firstValueOnPage = '',
+    lastValueOnPage = '',
+    searchValue = ''){
   if(!firstValueOnPage || firstValueOnPage == ''){
     lastValueOnPage = 0;
   }
@@ -156,14 +156,14 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
  * @param index
  */
 function sortingHandler(index){
-  if (index == sortingField){
-    if (sortingOrder == 'desc'){
+  if (index === sortingField){
+    if (sortingOrder === 'desc'){
       sortingOrder = defaultSortingOrder;
       sortingField = defaultSortingField;
-    } else if (sortingOrder == defaultSortingOrder){
+    } else if (sortingOrder === defaultSortingOrder){
       sortingOrder = 'desc'
     }
-  } else if (index != sortingField){
+  } else if (index !== sortingField){
     sortingField = index;
     sortingOrder = defaultSortingOrder;
   }
@@ -205,10 +205,16 @@ async function renderUI(source = 'current'){
 
     let count = filmsCountOnPage;
     if(source != 'prev'){
-      count += 1;
+      count++;
     }
 
-  filmList = await getFilmListFromAPI(sortingField,sortingOrder,count,source,firstValueOnPage,lastValueOnPage);
+  filmList = await getFilmListFromAPI(
+      sortingField,
+      sortingOrder,
+      count,
+      source,
+      firstValueOnPage,
+      lastValueOnPage);
   let isNextPageExist = false;
 
   if((filmList.length > filmsCountOnPage) || source == 'prev'){
@@ -241,7 +247,7 @@ async function renderUI(source = 'current'){
  * @return {Promise<void>}
  */
 async function loadNextPage(){
-  paginationClickCount ++;
+  paginationClickCount++;
   renderUI('next');
 }
 
@@ -251,7 +257,7 @@ async function loadNextPage(){
  * @return {Promise<void>}
  */
 async function loadPreviousPage(){
-  paginationClickCount --;
+  paginationClickCount--;
   renderUI('prev');
 }
 
