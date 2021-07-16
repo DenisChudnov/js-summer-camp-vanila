@@ -4,13 +4,14 @@ import '../../components/header/header.js';
 import '../../components/accordion/accordion.js';
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {Film} from "../../utils/models/film";
-import {getCurrentFilm, sendFilmDataToServer} from "../../api/services/filmService";
+import {getCurrentFilm, createFilmQuery, updateFilmQuery} from "../../api/services/filmService";
 import {openModalWindow} from '../../components/modal/modal.js'
 import {getFullPeoplesList} from "../../api/services/peopleService";
 import {getFullPlanetsList} from "../../api/services/planetService";
 import {getFullSpeciesList} from "../../api/services/speciesService";
 import {getFullStarshipsList} from "../../api/services/starshipService";
 import {getFullVehicleList} from "../../api/services/vehicleService";
+import {getDataFullList} from "../../api/services/detailsService";
 
 //some variables for page managment
 let characters = [];
@@ -20,58 +21,128 @@ let starships = [];
 let vehicles = [];
 let film;
 
+/**
+ * CHARACTERS LIST, wich rendered only on click
+ * For every film data, which can require additional request -
+ * there are appear accordion element,
+ * which send request to get data only if user want to see this data.
+ * Every accordion created with custom element and has click event listener - to call API and render result.
+ * This actual for every accordion in this page;
+ * @type {Element}
+ */
 const charactersAccordionElement = document.getElementsByClassName('accordion-button-panel')[0];
 charactersAccordionElement.innerText = 'CHARACTERS';
-document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
+const charactersPanelElement = document.getElementsByClassName('accordion-content-panel')[0]
+    charactersPanelElement.setAttribute('id','characters-panel');
 document.getElementById('characters-panel').innerHTML = '<ul id="characters-list"></ul>';
 charactersAccordionElement.addEventListener('click', async () => {
     if (characters.length == 0){
-        await getListOfCharacters();
-        renderCharactersListSelector();
+        characters = await getEntityDataListFromAPI('people');
+        renderDataListSelector(
+            film.characters,
+            characters,
+            document.getElementById('characters-list'),
+            charactersAccordionElement,
+            'name',
+            'character',
+            charactersPanelElement
+        )
     }
 });
 
+/**
+ * PLANETS LIST, which render only on click
+ * @type {Element}
+ */
 const planetsAccordionElement = document.getElementsByClassName('accordion-button-panel')[1];
 planetsAccordionElement.innerText = 'PLANETS';
-document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
+const planetsPanelElement = document.getElementsByClassName('accordion-content-panel')[1]
+    planetsPanelElement.setAttribute('id','planets-panel');
 document.getElementById('planets-panel').innerHTML = '<ul id="planets-list"></ul>';
 planetsAccordionElement.addEventListener('click', async () => {
     if (planets.length == 0){
-        await getListOfPlanets();
-        renderPlanetsListSelector();
+        planets = await getEntityDataListFromAPI('planet');
+        renderDataListSelector(
+            film.planets,
+            planets,
+            document.getElementById('planets-list'),
+            planetsAccordionElement,
+            'name',
+            'planet',
+            planetsPanelElement
+        )
     }
 });
 
+/**
+ * SPECIES LIST, render by click
+ * @type {Element}
+ */
 const speciesAccordionElement = document.getElementsByClassName('accordion-button-panel')[2];
 speciesAccordionElement.innerText = 'SPECIES';
-document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
+const speciesPanelElement = document.getElementsByClassName('accordion-content-panel')[2]
+    speciesPanelElement.setAttribute('id','species-panel');
 document.getElementById('species-panel').innerHTML = '<ul id="species-list"></ul>';
 speciesAccordionElement.addEventListener('click', async () => {
     if (species.length == 0){
-        await getListOfSpecies();
-        renderSpeciesListSelector();
+        species = await getEntityDataListFromAPI('species');
+        renderDataListSelector(
+            film.species,
+            species,
+            document.getElementById('species-list'),
+            speciesAccordionElement,
+            'name',
+            'species',
+            speciesPanelElement
+        )
     }
 });
 
+/**
+ * STARSHIPS LIST, render by click
+ * @type {Element}
+ */
 const starshipsAccordionElement = document.getElementsByClassName('accordion-button-panel')[3];
 starshipsAccordionElement.innerText = 'STARSHIPS';
-document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starships-panel');
+const starshipsPanelElement = document.getElementsByClassName('accordion-content-panel')[3]
+    starshipsPanelElement.setAttribute('id','starships-panel');
 document.getElementById('starships-panel').innerHTML = '<ul id="starships-list"></ul>';
 starshipsAccordionElement.addEventListener('click', async () => {
     if (starships.length == 0){
-        await getListOfStarships();
-        renderStarshipsListSelector();
+        starships = await getEntityDataListFromAPI('starship');
+        renderDataListSelector(
+            film.starships,
+            starships,
+            document.getElementById('starships-list'),
+            starshipsAccordionElement,
+            'starship_class',
+            'starships',
+            starshipsPanelElement
+        )
     }
 });
 
+/**
+ * VEHICLES LIST, render by click
+ * @type {Element}
+ */
 const vehiclesAccordionElement = document.getElementsByClassName('accordion-button-panel')[4];
 vehiclesAccordionElement.innerText = 'VEHICLES';
-document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
+const vehiclesPanelElement = document.getElementsByClassName('accordion-content-panel')[4]
+    vehiclesPanelElement.setAttribute('id','vehicles-panel');
 document.getElementById('vehicles-panel').innerHTML = '<ul id="vehicles-list"></ul>';
 vehiclesAccordionElement.addEventListener('click', async () => {
     if (vehicles.length == 0){
-        await getListOfVehicles();
-        renderVehiclesListSelector();
+        vehicles = await getEntityDataListFromAPI('vehicle');
+        renderDataListSelector(
+            film.vehicles,
+            vehicles,
+            document.getElementById('vehicles-list'),
+            vehiclesAccordionElement,
+            'vehicle_class',
+            'vehicles',
+            vehiclesPanelElement
+        )
     }
 });
 
@@ -79,7 +150,6 @@ const createFilmButton = document.getElementById('create-film-button');
 const updateFilmButton = document.getElementById('update-film-button');
 
 createFilmButton.addEventListener('click',createFilm);
-
 updateFilmButton.addEventListener('click',updateFilm);
 
 document
@@ -104,6 +174,10 @@ document
         }
     })
 
+
+/**
+ * Simple function for render filminformation, which not need to requests
+ */
 function renderBasicFilmInformation(){
     document.getElementById('film-title').value = film.title;
     document.getElementById('film-director').value = film.director;
@@ -113,133 +187,65 @@ function renderBasicFilmInformation(){
     document.getElementById('film-release-date').value = film.release_date;
 }
 
-async function getListOfCharacters(){
-    characters = await getFullPeoplesList();
-}
-
-function renderCharactersListSelector(){
-    characters.forEach(function(item){
+/**
+ * Function for render list of entityes objects
+ * @param {Array} filmDataList
+ * @param {Array} APIDataList
+ * @param {Element} listHTMLElement
+ * @param {Element} accordionHTMLElement
+ * @param {string} displayingFieldName
+ * @param {string} entityName
+ * @param {Element} panelHTMLElement
+ */
+function renderDataListSelector(
+    filmDataList,
+    APIDataList,
+    listHTMLElement,
+    accordionHTMLElement,
+    displayingFieldName,
+    entityName,
+    panelHTMLElement
+    ){
+    APIDataList.forEach(function (item){
         let checkedAttribute = '';
-        if(film.characters.includes(item.pk)){
-            checkedAttribute = 'checked'
+        if(filmDataList.includes(item.pk)){
+            checkedAttribute = 'checked';
         }
-        const element = document.createElement('li');
-
-        element.innerHTML += `
-        <input name="character-check-${item.pk}" 
-        class="character-check" 
-        type="checkbox" 
+        const listItem = document.createElement('li');
+        listItem.innerHTML += `
+        <input
+        name = ${entityName}-check-${item.pk}
+        class=${entityName}-check
+        type=checkbox
         value=${item.pk}
-        ${checkedAttribute}>
-        <label class="character-checkbox-label" 
-        for="character-check">${item.name}</label>
+        ${checkedAttribute}
+        >
+        <label
+        class=${entityName}-checkbox-label
+        for=${entityName}-check
+        >
+        ${item[displayingFieldName]}
+        </label>
         <br>
         `;
-        document.getElementById('characters-list').appendChild(element);
+        listHTMLElement.appendChild(listItem);
     })
+    panelHTMLElement.style.maxHeight = 24 * APIDataList.length + 'px';
+
 }
 
-async function getListOfPlanets(){
-    planets = await getFullPlanetsList();
+/**
+ * Function for get all list of entity objects from API
+ * @param entityName
+ * @return {Promise<*[]>}
+ */
+async function getEntityDataListFromAPI(entityName){
+    return await getDataFullList(entityName)
 }
 
-function renderPlanetsListSelector(){
-    planets.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.planets.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-
-        element.innerHTML += `
-        <input name="planet-check-${item.pk}" 
-        class="planet-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="planet-checkbox-label" 
-        for="planet-check">${item.name}</label>
-        <br>
-        `;
-        document.getElementById('planets-list').appendChild(element);
-    })
-}
-
-async function getListOfSpecies(){
-    species = await getFullSpeciesList();
-}
-
-function renderSpeciesListSelector(){
-    species.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.species.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="species-check-${item.pk}" 
-        class="species-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="species-checkbox-label" 
-        for="species-check">${item.name}</label>
-        <br>
-        `;
-        document.getElementById('species-list').appendChild(element);
-    })
-}
-
-async function getListOfStarships(){
-    starships = await getFullStarshipsList();
-}
-
-function renderStarshipsListSelector(){
-    starships.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.starships.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="starships-check-${item.pk}" 
-        class="starships-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="starships-checkbox-label" 
-        for="starships-check">${item.starship_class}</label>
-        <br>
-        `;
-        document.getElementById('starships-list').appendChild(element);
-    })
-}
-
-async function getListOfVehicles(){
-    vehicles = await getFullVehicleList();
-}
-
-function renderVehiclesListSelector(){
-    vehicles.forEach(function(item){
-        let checkedAttribute = '';
-        if(film.vehicles.includes(item.pk)){
-            checkedAttribute = 'checked'
-        }
-        const element = document.createElement('li');
-        element.innerHTML += `
-        <input name="vehicles-check-${item.pk}" 
-        class="vehicles-check" 
-        type="checkbox" 
-        value=${item.pk}
-        ${checkedAttribute}>
-        <label class="vehicles-checkbox-label" 
-        for="vehicles-check">${item.vehicle_class}</label>
-        <br>
-        `;
-        document.getElementById('vehicles-list').appendChild(element);
-    })
-}
-
+/**
+ * Function for get film data, which entered in form by user
+ */
 function getFilmDataFromForm(){
     const formElement = document.getElementById('film-edit-form');
     const dataFromForm = new FormData(formElement);
@@ -274,6 +280,10 @@ function getAllCheckedRowsFromSelector(entity){
     return resultArray;
 }
 
+/**
+ * Funtion for check if entered data is valid
+ * @return {boolean}
+ */
 function isFilmValid(){
     let errorMessageText = '';
     if(film.title.length<=0){
@@ -313,16 +323,39 @@ function isFilmValid(){
 
 }
 
+/**
+ * Function for send request to creqte film with entered parameters
+ * @return {Promise<void>}
+ */
 async function createFilm(){
     getFilmDataFromForm();
-    if(isFilmValid()){
-        await sendFilmDataToServer(film);
+    if(isFilmValid){
+        await createFilmQuery(film)
+            .then(value => {
+                openModalWindow('success','film successfully created');
+                setTimeout(function (){
+                    window.open('../','_self')
+                },5000);
+            })
+            .catch(error => {
+                openModalWindow('error', error);
+            })
     }
 }
 
+/**
+ * Function for update existing film with data, entered by user
+ * @return {Promise<void>}
+ */
 async function updateFilm(){
     getFilmDataFromForm();
-    if(isFilmValid()){
-        await sendFilmDataToServer(film);
+    if(isFilmValid){
+        await updateFilmQuery(film)
+            .then(value => {
+                openModalWindow('success','film successfully updated');
+            })
+            .catch(error => {
+                openModalWindow('error', error);
+            })
     }
 }

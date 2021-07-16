@@ -28,46 +28,45 @@ class Header extends HTMLElement {
             </div>
         </nav>
        `;
-  }
 
-}
+    this.authButton = document.getElementById('auth-call-btn');
+    this.authButton.addEventListener('click', handlerAuthButtonClick);
 
-
-customElements.get('header-component') || customElements.define('header-component', Header);
-
-const authButton = document.getElementById('auth-call-btn');
-
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  setAuthButtonText();
-  if (checkUserInLocalStorage()){
-    document.getElementById('links-list').innerHTML += `
+    document.addEventListener('DOMContentLoaded', () => {
+      this.setAuthButtonText();
+      if (checkUserInLocalStorage()){
+        document.getElementById('links-list').innerHTML += `
      <li class="nav-item" id="new-film-create-item">
         <a class="nav-link" id="new-film-create-link" href="../management.html">Create new film</a>
      </li>
     `;
+      }
+    });
+
   }
-});
+
+  disconnectedCallback(){
+    this.authButton.removeEventListener('click', handlerAuthButtonClick);
+  }
+
+  setAuthButtonText(){
+    this.authButton.innerText = checkUserInLocalStorage() ? 'Logout' : 'Login';
+  }
+
+}
 
 /**
- * Handler of click on auth-button
- * redirect to login page and
- * logout, if user is already logged in
+ * Function for handling auth button
+ * if user logged in - he wil logout
+ * and in each case - redirect to auth page
  */
-authButton.addEventListener('click', ()=>{
+function handlerAuthButtonClick(){
   if (checkUserInLocalStorage()) {
     logout();
   }
   window.open('auth.html', '_self');
-});
-
-/**
- * Simple function for set text on auth-button
- * if user is logged in - text is Logout
- * and in other case - text is Login
- */
-export function setAuthButtonText(){
-  authButton.innerText = checkUserInLocalStorage() ? 'Logout' : 'Login';
 }
+
+customElements.get('header-component') || customElements.define('header-component', Header);
 
 

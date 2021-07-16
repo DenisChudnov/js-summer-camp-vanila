@@ -1,15 +1,14 @@
-export class Species{
-  constructor(data) {
-    this.pk = data.pk;
-    this.peoples = data.peoples || [];
-    this.average_height = data.average_height;
-    this.average_lifespan = data.average_lifespan;
-    this.classification = data.classification;
-    this.designation = data.designation;
-    this.eye_colors = data.eye_colors;
-    this.hair_colors = data.hair_colors;
-    this.homeworld = data.homeworld;
-    this.language = data.language;
-    this.name = data.name;
-  }
-}
+/**
+ * @typedef {Object} Species
+ * @property {number} pk
+ * @property {array} peoples
+ * @property {string} average_height
+ * @property {string} average_lifespan
+ * @property {string} classification
+ * @property {string} designation
+ * @property {string} eye_colors
+ * @property {string} hair_colors
+ * @property {string} homeworld
+ * @property {string} language
+ * @property {string} name
+ */

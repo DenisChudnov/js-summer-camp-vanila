@@ -50,13 +50,13 @@ function _createModal(options) {
   const modal = document.createElement('div');
   modal.classList.add('vmodal');
   modal.insertAdjacentHTML('afterbegin', `
-    <div class="modal-overlay" data-close="true">
-      <div class="modal-window" style="width: ${options.width || DEFAULT_WIDTH}">
-        <div class="modal-header">
-          <span class="modal-title">${options.title || 'Окно'}</span>
-          ${options.closable ? '<span class="modal-close" data-close="true">&times;</span>' : ''}
+    <div class = "modal-overlay" data-close = "true">
+      <div class = "modal-window" style="width: ${options.width || DEFAULT_WIDTH}">
+        <div class = "modal-header">
+          <span class = "modal-title">${options.title || 'Окно'}</span>
+          ${options.closable ? '<span class = "modal-close" data-close = "true">&times;</span>' : ''}
         </div>
-        <div class="modal-body" data-content>
+        <div class = "modal-body" data-content>
           ${options.content || ''}
         </div>
       </div>
@@ -212,7 +212,11 @@ const modalWindowTypes = {
 }
 
 
-
+/**
+ * Function for rendering selected type of modal
+ * @param {Element} modal
+ * @param {string} message
+ */
 function renderSelectedModalWindow(modal, message){
   modal.setContent(`
   <p>${message}</p>
@@ -222,9 +226,9 @@ function renderSelectedModalWindow(modal, message){
 
 
 /**
- *
- * @param type
- * @param message
+ * Function for open window with selected type
+ * @param {string} type
+ * @param {string} message
  */
 export function openModalWindow(type, message){
   const selectedModalWindow = modalWindowTypes[type];

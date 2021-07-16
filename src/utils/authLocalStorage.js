@@ -1,5 +1,3 @@
-
-
 /**
  *function for save user data object
  * in browser local storage after

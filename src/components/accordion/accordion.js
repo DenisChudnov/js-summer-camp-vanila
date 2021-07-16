@@ -11,28 +11,32 @@ class Accordion extends HTMLElement {
 
   connectedCallback() {
     this.innerHTML = `
-        <button class="accordion-button-panel" type="button"></button>
+        <button class="accordion-button-panel" type = "button" title="open/close accordion"></button>
         <div class="accordion-content-panel">
         </div> 
         `;
+    const openButton = this.getElementsByTagName('button')[0];
+    openButton.addEventListener('click', openAccordionPanel);
+  }
+
+  disconnectedCallback(){
+    this.removeEventListener('click', openAccordionPanel);
   }
 
 }
 
-
-customElements.get('accordion-component') || customElements.define('accordion-component', Accordion);
-
-const acc = document.querySelectorAll('.accordion-button-panel');
-
-for (let i = 0; i < acc.length; i++) {
-  acc[i].addEventListener('click', function () {
-    this.classList.toggle('active');
-    let panel = this.nextElementSibling;
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + 'px';
-    }
-  });
+/**
+ * Function for handling click of accordion and
+ * show accordion panel
+ */
+function openAccordionPanel(){
+  this.classList.toggle('active');
+  const panel = this.nextElementSibling;
+  if (panel.style.maxHeight) {
+    panel.style.maxHeight = null;
+  } else {
+    panel.style.maxHeight = panel.scrollHeight + 'px';
+  }
 }
 
+customElements.get('accordion-component') || customElements.define('accordion-component', Accordion);

@@ -1,14 +1,14 @@
-export class People{
-  constructor(data) {
-    this.pk = data.pk;
-    this.birth_year = data.birth_year;
-    this.eye_color = data.eye_color;
-    this.gender = data.gender;
-    this.hair_color = data.hair_color;
-    this.height = data.height;
-    this.homeworld = data.homeworld;
-    this.mass = data.mass;
-    this.name = data.name;
-    this.skin_color = data.skin_color;
-  }
-}
+/**
+ * @typedef {Object} People
+ * @property {number} pk
+ * @property {string} birth_year
+ * @property {string} eye_color
+ * @property {string} gender
+ * @property {string} hair_color
+ * @property {string} height
+ * @property {string} homeworld
+ * @property {number} mass
+ * @property {string} name
+ * @property {string} skin_color
+ */
+

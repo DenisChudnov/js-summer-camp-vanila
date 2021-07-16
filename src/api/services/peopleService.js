@@ -1,29 +1,24 @@
-import {People} from '../../utils/models/people';
+import '../../utils/models/people.js'
 import {peopleRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
-/**
- * Function with created and send query for get peoples list by PrimaryKeys list;
- * @param pkList
- * @return {Promise<*[]>}
- */
-export async function getPeopleListByPrimaryKeys(pkList){
-    const query = peopleRef
-        .where('pk','in',pkList);
-    return await getRequestToAPI(query,'people');
-}
 
 /**
  * Function for transform doc, getted from API to people class object
- * @param doc
- * @return {People}
+ * @param {Object} doc - doc object from API
+ * @param {Object} People - type of object
+ * @return {People} - object of People class
  */
-export function castToPeopleClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new People(data);
+export function castToPeopleClass(doc, People){
+    People = doc.fields;
+    People.pk = doc.pk
+    return People
 }
 
+/**
+ * Function for get all peoples
+ * @return {Promise<*[]>}
+ */
 export async function getFullPeoplesList(){
     const query = peopleRef;
     return await getRequestToAPI(query,'people');

@@ -1,18 +1,11 @@
-import {Starship} from '../../utils/models/starship';
+import '../../utils/models/starship';
 import {starshipsRef} from '../firebaseSettings';
 import {getRequestToAPI} from '../firestoreCommunication';
 
 /**
- * Function for get starships object array from API by primary keys array;
- * @param keyList
+ * Function for get all list of starships from API
  * @return {Promise<*[]>}
  */
-export async function getStarshipsByKeyList(keyList){
-    const query = starshipsRef
-        .where('pk','in',keyList);
-    return await getRequestToAPI(query,'starship');
-}
-
 export async function getFullStarshipsList(){
     const query = starshipsRef;
     return await getRequestToAPI(query, 'starship');
@@ -20,11 +13,11 @@ export async function getFullStarshipsList(){
 
 /**
  * Function for transform doc from API to object with Starship class
- * @param doc
- * @return {Starship}
+ * @param {Object} doc - object doc from API
+ * @return {Starship} - type of starship
  */
-export function castToStarshipClass(doc){
-    const data = doc.fields;
-    data.pk = doc.pk;
-    return new Starship(data);
+export function castToStarshipClass(doc, Starship){
+    Starship = doc.fields;
+    Starship.pk = doc.pk;
+    return Starship;
 }

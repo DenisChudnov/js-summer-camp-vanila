@@ -6,20 +6,19 @@ import {openModalWindow} from "../../components/modal/modal";
 /**
  * Function for make GET films query to API.
  * Actualy - is query constructor, which create query with parameters.
- * retunr list of films, getted by parameters.
  * object queryParameters including next fields:
- * @param sortingByField string
- * @param sortingOrder string
- * @param limit int
- * @param direction string
- * @param endBeforeValue film field value (string)
- * @param startAfterValue film field value (string)
- * @param filterValue string
- * @return {Promise<*[]>}
+ * @param {string} sortingByField - string, field name for sorting
+ * @param {string} sortingOrder - order of sorting
+ * @param {number} limit - count of films, which will returned
+ * @param {string} direction - the page is relatively up-to-date - previous|current|next
+ * @param {object} endBeforeValue film field value - first film on current page
+ * @param {object} startAfterValue film field value - last film on current page
+ * @param {string} filterValue - string, which entered in search string
+ * @return {Promise<*[]>} list of films, getted by parameters.
  */
-export async function getFilmsQueryBuilder(queryParameters) {
+export async function getFilmsQueryBuilder(queryParameters, callback) {
 
-    if(queryParameters.filterValue!=='' && queryParameters.filterValue!==undefined){
+    if (queryParameters.filterValue !== '' && queryParameters.filterValue !== undefined){
         queryParameters.sortingByField = 'title';
         queryParameters.sortingOrder = 'asc';
     }
@@ -27,17 +26,17 @@ export async function getFilmsQueryBuilder(queryParameters) {
     let query = filmsRef
         .orderBy(queryParameters.sortingByField, queryParameters.sortingOrder);
 
-    if(queryParameters.filterValue!==''){
+    if (queryParameters.filterValue !== ''){
         query = query
         .where('fields.title', '>=', queryParameters.filterValue)
         .where('fields.title','<=',queryParameters.filterValue+'\uf8ff')
     }
 
-    if(queryParameters.direction === 'current'){
+    if (queryParameters.direction === 'current'){
         query = query.limit(queryParameters.limit)
     }
 
-    if(queryParameters.direction === 'next'){
+    if (queryParameters.direction === 'next'){
         query = query.startAfter(queryParameters.startAfterValue)
             .limit(queryParameters.limit)
     }
@@ -47,15 +46,17 @@ export async function getFilmsQueryBuilder(queryParameters) {
             .limitToLast(queryParameters.limit)
     }
 
-    return await getRequestToAPI(query, 'film');
+    return await getRequestToAPI(query, 'film', function(type, message){
+        callback(type, message)
+    });
 }
 
 
 /**
  * Simple function to make field names, getted from ui
  * valid for db query.
- * @param fieldName
- * @return {string}
+ * @param {string} fieldName - name of field of film class
+ * @return {string} - name of field on API doc
  */
 function changeOrderByFieldNameToValid(fieldName) {
     if (fieldName !== 'pk') {
@@ -67,8 +68,8 @@ function changeOrderByFieldNameToValid(fieldName) {
 /**
  * Simple function for transform every document, getted from API
  * to frontend Film class object
- * @param dataToCast
- * @return {Film}
+ * @param {Object} dataToCast - data - document object from API
+ * @return {Film} - object with Film class
  */
 export function castToFilmClass(dataToCast) {
     const data = dataToCast.fields;
@@ -78,50 +79,68 @@ export function castToFilmClass(dataToCast) {
 
 /**
  * Function for get current film by primary key from API;
- * @param primaryKey
- * @return {Promise<*>}
+ * @param {number} primaryKey - primary key of film
+ * @return {Promise<*>} - film class object
  */
-export async function getCurrentFilm(primaryKey){
+export async function getCurrentFilm(primaryKey, callback){
     const query = filmsRef
         .where('pk','==',primaryKey);
-    const result = await getRequestToAPI(query,'film');
+    const result = await getRequestToAPI(query,'film',function(type, message){
+        callback(type, message)
+    });
     return result[0];
 }
 
 /**
- * function for send film's data to server.
- * If film with same primary key is already exist -
- * there are build update query.
- * If is brand new film - build create query
- * @param filmData
+ * Function for updating existing film
+ * @param {Object} filmData - data of film, which need to set
  * @return {Promise<void>}
  */
-export async function sendFilmDataToServer(filmData){
-    const data = transformFilmObjectToFBDoc(filmData);
-    let query = filmsRef;
+export async function updateFilmQuery(filmData){
+    const data = mapperFilmObjectToFBDoc(filmData);
     const existingFilmRefer = await  filmsRef
-        .where('pk','==',data.pk)
+        .where('pk','==', data.pk)
         .get()
-        .then((snapshot)=>{
+        .then((snapshot) => {
             return snapshot.docs.map((doc)=>{
                 return doc.id;
             })
         });
-    if(existingFilmRefer.length>0){
-        query = query.doc(existingFilmRefer[0]);
-    } else {
-        query = query
-            .doc();
-    }
-    await postRequestToAPI(query, data);
+    const query = filmsRef
+        .doc(existingFilmRefer[0]);
+    await postRequestToAPI(query, data)
+        .then(value => {
+            return value;
+        })
+        .catch(error => {
+            return error;
+        })
+}
+
+/**
+ * Function for create new film
+ * @param {Object} filmData - data of film for sending
+ * @return {Promise<void>}
+ */
+export async function createFilmQuery(filmData){
+    const data = mapperFilmObjectToFBDoc(filmData);
+    const query = filmsRef
+        .doc();
+    await postRequestToAPI(query, data)
+        .then(value => {
+            return value;
+        })
+        .catch(error => {
+            return error;
+        })
 }
 
 /**
  * Simple function just for transform film data to fb format
- * @param film
- * @return {any}
+ * @param {Object} film - object of class FILM
+ * @return {Object} - doc object of film from API
  */
-function transformFilmObjectToFBDoc(film){
+function mapperFilmObjectToFBDoc(film){
     const pk = film.pk;
     delete film.pk;
     return JSON.parse(JSON.stringify({
@@ -133,27 +152,26 @@ function transformFilmObjectToFBDoc(film){
 
 /**
  * Function with delete film by primary key request
- * @param primaryKey
+ * @param {Number} primaryKey - primary key of deleting film;
  * @return {Promise<void>}
  */
 export async function deleteCurrentFilm(primaryKey){
     let query = filmsRef;
     const Refer = await  filmsRef
-        .where('pk','==',primaryKey)
+        .where('pk', '==', primaryKey)
         .get()
-        .then((snapshot)=>{
-            return snapshot.docs.map((doc)=>{
+        .then((snapshot) => {
+            return snapshot.docs.map((doc) => {
                 return doc.id;
             })
         });
-
     await query
         .doc(Refer[0])
         .delete()
-        .then(()=>{
+        .then(() => {
             openModalWindow('success','Film was deleted successfully')
         })
-        .catch((error)=>{
-            openModalWindow('error',error);
+        .catch((error) => {
+            openModalWindow('error', error);
         })
 }

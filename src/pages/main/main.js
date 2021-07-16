@@ -9,6 +9,7 @@ import {
 } from "../../api/services/filmService";
 import {checkUserInLocalStorage} from "../../utils/authLocalStorage";
 import {transformation} from "../../utils/filmGenerateSortingFieldName";
+import {openModalWindow} from "../../components/modal/modal";
 
 //There are variables for table managment
 let filmList = [];
@@ -47,7 +48,7 @@ searchInput
       paginationClickCount = 0;
   let result = await getFilmListFromAPI(sortingField, sortingOrder,filmsCountOnPage,'current','','', searchingValue);
   cleanUpTable();
-  result.forEach(film=>{
+  result.forEach(film => {
     renderFilmInTable(film);
   })
 })
@@ -64,39 +65,29 @@ document
     renderOfDetailsColumn();
     renderOfManageColumn();
     renderOfDeleteColumn();
-    // let cell = document.createElement("th");
-    // cell.setAttribute('class','films-table-header')
-    // cell.appendChild(document.createTextNode('more...'))
-    // filmTable.rows[0].appendChild(cell);
   }
   renderUI();
 })
 
 function renderOfDetailsColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Info'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 function renderOfManageColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Edit'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 function renderOfDeleteColumn(){
-  if(checkUserInLocalStorage()){
     let cell = document.createElement("th");
-    cell.setAttribute('class','films-table-header')
+    cell.classList.add('films-table-header')
     cell.appendChild(document.createTextNode('Delete'))
     filmTable.rows[0].appendChild(cell);
-  }
 }
 
 document
@@ -110,8 +101,8 @@ document
  */
 document
     .querySelectorAll('.films-table-header')
-    .forEach((headerCell, index)=>{
-      headerCell.addEventListener('click', ()=>{
+    .forEach((headerCell, index) => {
+      headerCell.addEventListener('click', () => {
         sortingHandler(transformation(index));
       })
     })
@@ -128,22 +119,30 @@ document
  * @param lastValueOnPage
  * @return {Promise<*[]>}
  */
-async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrder = defaultSortingOrder, limit = defaultFilmsCountOnPage,  direction,firstValueOnPage = '', lastValueOnPage = '', searchValue = ''){
+async function getFilmListFromAPI(
+    sortingField = defaultSortingField,
+    sortingOrder = defaultSortingOrder,
+    limit = defaultFilmsCountOnPage,
+    direction,firstValueOnPage = '',
+    lastValueOnPage = '',
+    searchValue = ''){
   if(!firstValueOnPage || firstValueOnPage == ''){
     lastValueOnPage = 0;
   }
 
   const queryParameters = {
-    'sortingByField':sortingField,
-    'sortingOrder':sortingOrder,
-    'limit':limit,
-    'direction':direction,
-    'endBeforeValue':firstValueOnPage,
-    'startAfterValue':lastValueOnPage,
-    'filterValue':searchValue
+    sortingByField:sortingField,
+    sortingOrder:sortingOrder,
+    limit:limit,
+    direction:direction,
+    endBeforeValue:firstValueOnPage,
+    startAfterValue:lastValueOnPage,
+    filterValue:searchValue
   }
 
-  let films =  getFilmsQueryBuilder(queryParameters);
+  let films =  getFilmsQueryBuilder(queryParameters, function (type, message){
+    openModalWindow(type, message);
+  });
   return films;
 }
 
@@ -157,14 +156,14 @@ async function getFilmListFromAPI(sortingField = defaultSortingField, sortingOrd
  * @param index
  */
 function sortingHandler(index){
-  if (index == sortingField){
-    if (sortingOrder == 'desc'){
+  if (index === sortingField){
+    if (sortingOrder === 'desc'){
       sortingOrder = defaultSortingOrder;
       sortingField = defaultSortingField;
-    } else if (sortingOrder == defaultSortingOrder){
+    } else if (sortingOrder === defaultSortingOrder){
       sortingOrder = 'desc'
     }
-  } else if (index != sortingField){
+  } else if (index !== sortingField){
     sortingField = index;
     sortingOrder = defaultSortingOrder;
   }
@@ -200,25 +199,24 @@ async function renderUI(source = 'current'){
     if(filmList[0]){
       firstValueOnPage = filmList[0][sortingField]
     }
-    if(filmList[filmList.length-1]){
-      lastValueOnPage = filmList[filmList.length-1][sortingField];
+    if(filmList[filmList.length - 1]){
+      lastValueOnPage = filmList[filmList.length - 1][sortingField];
     }
 
     let count = filmsCountOnPage;
     if(source != 'prev'){
-      count+=1;
+      count++;
     }
 
-  filmList = await getFilmListFromAPI(sortingField,sortingOrder,count,source,firstValueOnPage,lastValueOnPage);
-  let isNextPageExist = false;
-
-  if((filmList.length > filmsCountOnPage) || source == 'prev'){
-    isNextPageExist = true
-  } else if (filmList.length <= filmsCountOnPage) {
-    isNextPageExist = false;
-  }
-
-  filmList = filmList.slice(0,filmsCountOnPage);
+  filmList = await getFilmListFromAPI(
+      sortingField,
+      sortingOrder,
+      count,
+      source,
+      firstValueOnPage,
+      lastValueOnPage);
+  const isNextPageExist = filmList.length > filmsCountOnPage || source === 'prev';
+  filmList = filmList.slice(0, filmsCountOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
   })
@@ -229,7 +227,7 @@ async function renderUI(source = 'current'){
   }
   if(paginationClickCount === 0){
     previousPageButton.classList.add('hidden');
-  } else if (paginationClickCount >0){
+  } else if (paginationClickCount > 0){
     previousPageButton.classList.remove('hidden');
   }
 }
@@ -252,7 +250,7 @@ async function loadNextPage(){
  * @return {Promise<void>}
  */
 async function loadPreviousPage(){
-  paginationClickCount --;
+  paginationClickCount--;
   renderUI('prev');
 }
 
@@ -262,39 +260,48 @@ async function loadPreviousPage(){
  * @param film
  */
 function renderFilmInTable(film) {
+  const { title, episode_id, release_date, director, producer } = film;
+  const partialFilmInfo = { title, episode_id, release_date, director, producer };
   const row = filmTable.insertRow(filmTable.rows.length);
-  const cell0 = row.insertCell(0);
-  cell0.appendChild(document.createTextNode(film.title));
-  const cell1 = row.insertCell(1);
-  cell1.appendChild(document.createTextNode(film.episode_id));
-  const cell2 = row.insertCell(2);
-  cell2.appendChild(document.createTextNode(film.release_date));
-  const cell3 = row.insertCell(3);
-  cell3.appendChild(document.createTextNode(film.director));
-  const cell4 = row.insertCell(4);
-  cell4.appendChild(document.createTextNode(film.producer));
+  for (const filmAttribute of Object.keys(partialFilmInfo)){
+    const cell = row.insertCell()
+    cell.appendChild(document.createTextNode(film[filmAttribute]))
+  }
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
-    let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href='../details.html?pk=${film.pk}'><button class='btn btn-info'>Details</button></a>`
+    const detailsButton = document.createElement("a");
+    detailsButton.setAttribute('href',`../details.html?pk=${film.pk}`)
+    detailsButton.setAttribute('role','button')
+    detailsButton.classList.add('btn')
+    detailsButton.classList.add('btn-light')
+    detailsButton.innerText = 'Details'
     cell5.appendChild(detailsButton);
     const cell6 = row.insertCell(6);
-    let editButton = document.createElement("a");
-    editButton.innerHTML = `<a href='../management.html?pk=${film.pk}'><button class="btn btn-success">Edit</button></a>`
+    const editButton = document.createElement("a");
+    editButton.setAttribute('href',`../management.html?pk=${film.pk}`);
+    editButton.setAttribute('role','button');
+    editButton.classList.add('btn');
+    editButton.classList.add('btn-success');
+    editButton.innerText = 'Edit'
     cell6.appendChild(editButton);
     const cell7 = row.insertCell(7);
-    let deleteButton = document.createElement('a');
-    deleteButton.addEventListener('click',()=>{
+    const deleteButton = document.createElement('a');
+    deleteButton.setAttribute('id',`button-delete-${film.pk}`)
+    deleteButton.setAttribute('value',`${film.title}`)
+    deleteButton.classList.add('btn')
+    deleteButton.classList.add('btn-danger')
+    deleteButton.classList.add('delete-button')
+    deleteButton.innerText = 'Delete';
+    deleteButton.addEventListener('click',() => {
       customModal.confirm({
-        title:'Delete',
-        content:`Do you really wont to delete ${film.title} film?`
+        title: 'Delete',
+        content: `Do you really wont to delete ${film.title} film?`
       })
-          .then(async ()=>{
+          .then(async () => {
             await deleteCurrentFilm(film.pk)
             renderUI();
           })
     })
-    deleteButton.innerHTML = `<button class="btn btn-danger delete-button" id='button-delete-${film.pk}' value=${film.title}>Delete</button>`
     cell7.appendChild(deleteButton);
   };
   row.setAttribute('class', 'film-row');
