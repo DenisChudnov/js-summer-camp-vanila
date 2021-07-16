@@ -48,7 +48,8 @@ document.addEventListener('DOMContentLoaded', async () => {
  */
 const charactersAccordionElement = document.getElementsByClassName('accordion-button-panel')[0];
 charactersAccordionElement.innerText = 'CHARACTERS';
-document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
+const charactersPanelElement = document.getElementsByClassName('accordion-content-panel')[0]
+    charactersPanelElement.setAttribute('id','characters-panel');
 document.getElementById('characters-panel').innerHTML = '<ul id = "characters-list"></ul>';
 charactersAccordionElement.addEventListener('click', async () => {
   if (characters.length == 0){
@@ -57,7 +58,8 @@ charactersAccordionElement.addEventListener('click', async () => {
         film.characters,
         characters,
         document.getElementById('characters-list'),
-        charactersAccordionElement);
+        charactersAccordionElement,
+        charactersPanelElement);
   }
 });
 
@@ -67,7 +69,8 @@ charactersAccordionElement.addEventListener('click', async () => {
  */
 const planetsAccordionElement = document.getElementsByClassName('accordion-button-panel')[1];
 planetsAccordionElement.innerText = 'PLANETS';
-document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
+const planetsPanelElement = document.getElementsByClassName('accordion-content-panel')[1]
+    planetsPanelElement.setAttribute('id','planets-panel');
 document.getElementById('planets-panel').innerHTML = '<ul id = "planets-list"></ul>';
 planetsAccordionElement.addEventListener('click', async () => {
   if (planets.length == 0){
@@ -76,7 +79,8 @@ planetsAccordionElement.addEventListener('click', async () => {
         film.planets,
         planets,
         document.getElementById('planets-list'),
-        planetsAccordionElement);
+        planetsAccordionElement,
+        planetsPanelElement);
   }
 });
 
@@ -86,7 +90,8 @@ planetsAccordionElement.addEventListener('click', async () => {
  */
 const speciesAccordionElement = document.getElementsByClassName('accordion-button-panel')[2];
 speciesAccordionElement.innerText = 'SPECIES';
-document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
+const speciesPanelElement = document.getElementsByClassName('accordion-content-panel')[2]
+    speciesPanelElement.setAttribute('id','species-panel');
 document.getElementById('species-panel').innerHTML = '<ul id = "species-list"></ul>';
 speciesAccordionElement.addEventListener('click', async () => {
   if (species.length == 0){
@@ -95,7 +100,8 @@ speciesAccordionElement.addEventListener('click', async () => {
         film.species,
         species,
         document.getElementById('species-list'),
-        speciesAccordionElement);
+        speciesAccordionElement,
+        speciesPanelElement);
   }
 });
 
@@ -105,7 +111,8 @@ speciesAccordionElement.addEventListener('click', async () => {
  */
 const starshipsAccordionElement = document.getElementsByClassName('accordion-button-panel')[3];
 starshipsAccordionElement.innerText = 'STARSHIPS';
-document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starship-panel');
+const starshipsPanelElement = document.getElementsByClassName('accordion-content-panel')[3]
+    starshipsPanelElement.setAttribute('id','starship-panel');
 document.getElementById('starship-panel').innerHTML = '<ul id = "starships-list"></ul>';
 starshipsAccordionElement.addEventListener('click', async () => {
   if (starships.length == 0){
@@ -114,7 +121,8 @@ starshipsAccordionElement.addEventListener('click', async () => {
         film.starships,
         starships,
         document.getElementById('starships-list'),
-        starshipsAccordionElement);
+        starshipsAccordionElement,
+        starshipsPanelElement);
   }
 });
 
@@ -124,7 +132,8 @@ starshipsAccordionElement.addEventListener('click', async () => {
  */
 const vehiclesAccordionElement = document.getElementsByClassName('accordion-button-panel')[4];
 vehiclesAccordionElement.innerText = 'VEHICLES';
-document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
+const vehiclesPanelElement = document.getElementsByClassName('accordion-content-panel')[4]
+    vehiclesPanelElement.setAttribute('id','vehicles-panel');
 document.getElementById('vehicles-panel').innerHTML = '<ul id = "vehicles-list"></ul>';
 vehiclesAccordionElement.addEventListener('click', async () => {
   if (vehicles.length == 0){
@@ -133,7 +142,8 @@ vehiclesAccordionElement.addEventListener('click', async () => {
         film.vehicles,
         vehicles,
         document.getElementById('vehicles-list'),
-        vehiclesAccordionElement);
+        vehiclesAccordionElement,
+        vehiclesPanelElement);
   }
 });
 
@@ -174,7 +184,8 @@ function displayFilmBasicDetails(film){
  * @param {Array} entityList list of entityes object, included in film
  * @param {Array} dataList list of all entiyes objects
  * @param {Element} listHTMLElement - element list of entityes
- * @param {Element} accordionHTMLElement element accordion panel
+ * @param {Element} accordionHTMLElement element accordion button
+ * @param {Element} panelHTMLElement element accordion panel
  * @return {Promise<*[]>}
  */
 async function fillDataList(
@@ -182,7 +193,9 @@ async function fillDataList(
     entityList,
     dataList,
     listHTMLElement,
-    accordionHTMLElement){
+    accordionHTMLElement,
+    panelHTMLElement
+    ){
   dataList = await getDataByKeysList(entityName, entityList, function (type, message) {
     openModalWindow(type, message);
   })
@@ -198,6 +211,6 @@ async function fillDataList(
     }
   listHTMLElement.appendChild(newLI);
   })
-  accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * entityList.length + 'px';
+  panelHTMLElement.style.maxHeight = 24 * entityList.length + 'px';
   return dataList;
 }

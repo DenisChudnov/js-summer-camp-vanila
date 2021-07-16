@@ -215,14 +215,7 @@ async function renderUI(source = 'current'){
       source,
       firstValueOnPage,
       lastValueOnPage);
-  let isNextPageExist = false;
-
-  if((filmList.length > filmsCountOnPage) || source == 'prev'){
-    isNextPageExist = true
-  } else if (filmList.length <= filmsCountOnPage) {
-    isNextPageExist = false;
-  }
-
+  const isNextPageExist = filmList.length > filmsCountOnPage || source === 'prev';
   filmList = filmList.slice(0, filmsCountOnPage);
   filmList.forEach(film => {
     renderFilmInTable(film);
@@ -267,28 +260,38 @@ async function loadPreviousPage(){
  * @param film
  */
 function renderFilmInTable(film) {
+  const { title, episode_id, release_date, director, producer } = film;
+  const partialFilmInfo = { title, episode_id, release_date, director, producer };
   const row = filmTable.insertRow(filmTable.rows.length);
-  const cell0 = row.insertCell(0);
-  cell0.appendChild(document.createTextNode(film.title));
-  const cell1 = row.insertCell(1);
-  cell1.appendChild(document.createTextNode(film.episode_id));
-  const cell2 = row.insertCell(2);
-  cell2.appendChild(document.createTextNode(film.release_date));
-  const cell3 = row.insertCell(3);
-  cell3.appendChild(document.createTextNode(film.director));
-  const cell4 = row.insertCell(4);
-  cell4.appendChild(document.createTextNode(film.producer));
+  for (const filmAttribute of Object.keys(partialFilmInfo)){
+    const cell = row.insertCell()
+    cell.appendChild(document.createTextNode(film[filmAttribute]))
+  }
   if(checkUserInLocalStorage()){
     const cell5 = row.insertCell(5);
-    let detailsButton = document.createElement("a");
-    detailsButton.innerHTML = `<a href = '../details.html?pk=${film.pk}'><button class = 'btn btn-light'>Details</button></a>`
+    const detailsButton = document.createElement("a");
+    detailsButton.setAttribute('href',`../details.html?pk=${film.pk}`)
+    detailsButton.setAttribute('role','button')
+    detailsButton.classList.add('btn')
+    detailsButton.classList.add('btn-light')
+    detailsButton.innerText = 'Details'
     cell5.appendChild(detailsButton);
     const cell6 = row.insertCell(6);
-    let editButton = document.createElement("a");
-    editButton.innerHTML = `<a href  = '../management.html?pk=${film.pk}'><button class = 'btn btn-success'>Edit</button></a>`
+    const editButton = document.createElement("a");
+    editButton.setAttribute('href',`../management.html?pk=${film.pk}`);
+    editButton.setAttribute('role','button');
+    editButton.classList.add('btn');
+    editButton.classList.add('btn-success');
+    editButton.innerText = 'Edit'
     cell6.appendChild(editButton);
     const cell7 = row.insertCell(7);
-    let deleteButton = document.createElement('a');
+    const deleteButton = document.createElement('a');
+    deleteButton.setAttribute('id',`button-delete-${film.pk}`)
+    deleteButton.setAttribute('value',`${film.title}`)
+    deleteButton.classList.add('btn')
+    deleteButton.classList.add('btn-danger')
+    deleteButton.classList.add('delete-button')
+    deleteButton.innerText = 'Delete';
     deleteButton.addEventListener('click',() => {
       customModal.confirm({
         title: 'Delete',
@@ -299,7 +302,6 @@ function renderFilmInTable(film) {
             renderUI();
           })
     })
-    deleteButton.innerHTML = `<button class = 'btn btn-danger delete-button' id = 'button-delete-${film.pk}' value = ${film.title}>Delete</button>`
     cell7.appendChild(deleteButton);
   };
   row.setAttribute('class', 'film-row');

@@ -32,7 +32,8 @@ let film;
  */
 const charactersAccordionElement = document.getElementsByClassName('accordion-button-panel')[0];
 charactersAccordionElement.innerText = 'CHARACTERS';
-document.getElementsByClassName('accordion-content-panel')[0].setAttribute('id','characters-panel');
+const charactersPanelElement = document.getElementsByClassName('accordion-content-panel')[0]
+    charactersPanelElement.setAttribute('id','characters-panel');
 document.getElementById('characters-panel').innerHTML = '<ul id="characters-list"></ul>';
 charactersAccordionElement.addEventListener('click', async () => {
     if (characters.length == 0){
@@ -43,7 +44,8 @@ charactersAccordionElement.addEventListener('click', async () => {
             document.getElementById('characters-list'),
             charactersAccordionElement,
             'name',
-            'character'
+            'character',
+            charactersPanelElement
         )
     }
 });
@@ -54,7 +56,8 @@ charactersAccordionElement.addEventListener('click', async () => {
  */
 const planetsAccordionElement = document.getElementsByClassName('accordion-button-panel')[1];
 planetsAccordionElement.innerText = 'PLANETS';
-document.getElementsByClassName('accordion-content-panel')[1].setAttribute('id','planets-panel');
+const planetsPanelElement = document.getElementsByClassName('accordion-content-panel')[1]
+    planetsPanelElement.setAttribute('id','planets-panel');
 document.getElementById('planets-panel').innerHTML = '<ul id="planets-list"></ul>';
 planetsAccordionElement.addEventListener('click', async () => {
     if (planets.length == 0){
@@ -65,7 +68,8 @@ planetsAccordionElement.addEventListener('click', async () => {
             document.getElementById('planets-list'),
             planetsAccordionElement,
             'name',
-            'planet'
+            'planet',
+            planetsPanelElement
         )
     }
 });
@@ -76,12 +80,11 @@ planetsAccordionElement.addEventListener('click', async () => {
  */
 const speciesAccordionElement = document.getElementsByClassName('accordion-button-panel')[2];
 speciesAccordionElement.innerText = 'SPECIES';
-document.getElementsByClassName('accordion-content-panel')[2].setAttribute('id','species-panel');
+const speciesPanelElement = document.getElementsByClassName('accordion-content-panel')[2]
+    speciesPanelElement.setAttribute('id','species-panel');
 document.getElementById('species-panel').innerHTML = '<ul id="species-list"></ul>';
 speciesAccordionElement.addEventListener('click', async () => {
     if (species.length == 0){
-        // await getListOfSpecies();
-        // renderSpeciesListSelector();
         species = await getEntityDataListFromAPI('species');
         renderDataListSelector(
             film.species,
@@ -89,7 +92,8 @@ speciesAccordionElement.addEventListener('click', async () => {
             document.getElementById('species-list'),
             speciesAccordionElement,
             'name',
-            'species'
+            'species',
+            speciesPanelElement
         )
     }
 });
@@ -100,12 +104,11 @@ speciesAccordionElement.addEventListener('click', async () => {
  */
 const starshipsAccordionElement = document.getElementsByClassName('accordion-button-panel')[3];
 starshipsAccordionElement.innerText = 'STARSHIPS';
-document.getElementsByClassName('accordion-content-panel')[3].setAttribute('id','starships-panel');
+const starshipsPanelElement = document.getElementsByClassName('accordion-content-panel')[3]
+    starshipsPanelElement.setAttribute('id','starships-panel');
 document.getElementById('starships-panel').innerHTML = '<ul id="starships-list"></ul>';
 starshipsAccordionElement.addEventListener('click', async () => {
     if (starships.length == 0){
-        // await getListOfStarships();
-        // renderStarshipsListSelector();
         starships = await getEntityDataListFromAPI('starship');
         renderDataListSelector(
             film.starships,
@@ -113,7 +116,8 @@ starshipsAccordionElement.addEventListener('click', async () => {
             document.getElementById('starships-list'),
             starshipsAccordionElement,
             'starship_class',
-            'starships'
+            'starships',
+            starshipsPanelElement
         )
     }
 });
@@ -124,12 +128,11 @@ starshipsAccordionElement.addEventListener('click', async () => {
  */
 const vehiclesAccordionElement = document.getElementsByClassName('accordion-button-panel')[4];
 vehiclesAccordionElement.innerText = 'VEHICLES';
-document.getElementsByClassName('accordion-content-panel')[4].setAttribute('id','vehicles-panel');
+const vehiclesPanelElement = document.getElementsByClassName('accordion-content-panel')[4]
+    vehiclesPanelElement.setAttribute('id','vehicles-panel');
 document.getElementById('vehicles-panel').innerHTML = '<ul id="vehicles-list"></ul>';
 vehiclesAccordionElement.addEventListener('click', async () => {
     if (vehicles.length == 0){
-        // await getListOfVehicles();
-        // renderVehiclesListSelector();
         vehicles = await getEntityDataListFromAPI('vehicle');
         renderDataListSelector(
             film.vehicles,
@@ -137,7 +140,8 @@ vehiclesAccordionElement.addEventListener('click', async () => {
             document.getElementById('vehicles-list'),
             vehiclesAccordionElement,
             'vehicle_class',
-            'vehicles'
+            'vehicles',
+            vehiclesPanelElement
         )
     }
 });
@@ -191,6 +195,7 @@ function renderBasicFilmInformation(){
  * @param {Element} accordionHTMLElement
  * @param {string} displayingFieldName
  * @param {string} entityName
+ * @param {Element} panelHTMLElement
  */
 function renderDataListSelector(
     filmDataList,
@@ -198,7 +203,8 @@ function renderDataListSelector(
     listHTMLElement,
     accordionHTMLElement,
     displayingFieldName,
-    entityName
+    entityName,
+    panelHTMLElement
     ){
     APIDataList.forEach(function (item){
         let checkedAttribute = '';
@@ -224,7 +230,7 @@ function renderDataListSelector(
         `;
         listHTMLElement.appendChild(listItem);
     })
-    accordionHTMLElement.nextElementSibling.style.maxHeight = 24 * APIDataList.length + 'px';
+    panelHTMLElement.style.maxHeight = 24 * APIDataList.length + 'px';
 
 }
 
